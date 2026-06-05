@@ -54,21 +54,21 @@ const singleBanks: BankOption[] = [
     name: 'ActivoBank',
     endpoint: '/file/activoBank',
     description: 'Convert ActivoBank files',
-    logo: '/src/logos/AB.png'
+    logo: '/AB.png'
   },
   {
     id: 'creditoAgricola',
     name: 'Crédito Agrícola',
     endpoint: '/file/creditoAgricola',
     description: 'Convert Crédito Agrícola files',
-    logo: '/src/logos/CA.png'
+    logo: '/CA.png'
   },
   {
     id: 'cryptoCom',
     name: 'Crypto.com',
     endpoint: '/file/cryptoCom',
     description: 'Convert Crypto.com files',
-    logo: '/src/logos/CY.png'
+    logo: '/CY.png'
   }
 ]
 </script>

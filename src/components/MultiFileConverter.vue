@@ -2,7 +2,7 @@
   <div class="multi-converter-card">
     <div class="card-header">
       <div class="icon">
-        <img :src="'/src/logos/logo.png'" width="50" height="50"/>
+        <img :src="'/logo.png'" width="50" height="50"/>
       </div>
       <div class="header-text">
         <h3>Convert Multiple Files</h3>
@@ -73,21 +73,21 @@ const banks: BankOption[] = [
     name: 'ActivoBank',
     endpoint: '/file/activoBank',
     description: 'ActivoBank CSV',
-    logo: '/src/logos/AB.png'
+    logo: '/AB.png'
   },
   {
     id: 'creditoAgricola',
     name: 'Crédito Agrícola',
     endpoint: '/file/creditoAgricola',
     description: 'Crédito Agrícola CSV',
-    logo: '/src/logos/CA.png'
+    logo: '/CA.png'
   },
   {
     id: 'cryptoCom',
     name: 'Crypto.com',
     endpoint: '/file/cryptoCom',
     description: 'Crypto.com CSV',
-    logo: '/src/logos/CY.png'
+    logo: '/CY.png'
   }
 ]
 
