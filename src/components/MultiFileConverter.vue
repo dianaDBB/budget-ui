@@ -132,7 +132,7 @@ async function handleConvertAll(): Promise<void> {
     )
 
     const timestamp = new Date().toISOString().split('T')[0]
-    const fileName = `all_banks_budget_${timestamp}.xlsx`
+    const fileName = `all_banks_${timestamp}.xlsx`
     downloadFile(blob, fileName)
 
     status.value.isSuccess = true
