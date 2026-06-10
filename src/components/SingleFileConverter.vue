@@ -20,7 +20,11 @@
           class="file-input"
           @change="handleFileSelect"
         />
-        <label :for="`file-input-${bankOption.id}`" class="file-label">
+        <label
+          :for="`file-input-${bankOption.id}`"
+          class="file-label"
+          :data-testid="`single-file-input-${bankOption.id}`"
+        >
           <span v-if="!selectedFile" class="label-text">
             <span class="upload-icon">🗀</span>
             Click to select file
@@ -32,17 +36,22 @@
         </label>
       </div>
 
-      <button :disabled="!selectedFile || status.isLoading" class="btn btn-primary" @click="handleConvert">
+      <button
+        :disabled="!selectedFile || status.isLoading"
+        class="btn btn-primary"
+        :data-testid="`convert-button-${bankOption.id}`"
+        @click="handleConvert"
+      >
         <span v-if="status.isLoading" class="spinner">⚙️</span>
         <span v-else>Convert</span>
       </button>
 
-      <div v-if="status.isError" class="alert alert-error">
+      <div v-if="status.isError" class="alert alert-error" :data-testid="`conversion-error-${bankOption.id}`">
         <span class="alert-icon">⚠️</span>
         {{ status.message }}
       </div>
 
-      <div v-if="status.isSuccess" class="alert alert-success">
+      <div v-if="status.isSuccess" class="alert alert-success" :data-testid="`conversion-success-${bankOption.id}`">
         <span class="alert-icon">✓</span>
         {{ status.message }}
       </div>

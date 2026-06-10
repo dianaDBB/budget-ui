@@ -10,7 +10,7 @@ test.describe('Single File Conversion - Crédito Agrícola', () => {
     await test.step('Upload a valid Crédito Agrícola CSV file to the Crédito Agrícola file input', async () => {
       const filePath = path.join(process.cwd(), `/tests/resources/CreditoAgricola.xlsx`);
       await budgetPage.locators.singleSection.creditoAgricola.fileInput().setInputFiles(filePath);
-      await expect(budgetPage.locators.singleSection.creditoAgricola.fileLabel()).not.toContainText(
+      await expect(budgetPage.locators.singleSection.creditoAgricola.fileInput()).not.toContainText(
         'Click to select file',
       );
     });
@@ -28,7 +28,7 @@ test.describe('Single File Conversion - Crédito Agrícola', () => {
     });
 
     await test.step('Verify the file label resets to Click to select file', async () => {
-      await expect(budgetPage.locators.singleSection.creditoAgricola.fileLabel()).toContainText('Click to select file');
+      await expect(budgetPage.locators.singleSection.creditoAgricola.fileInput()).toContainText('Click to select file');
     });
 
     await test.step('Verify the Convert button becomes disabled again', async () => {

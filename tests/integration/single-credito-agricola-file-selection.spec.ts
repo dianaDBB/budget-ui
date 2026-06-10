@@ -13,7 +13,7 @@ test.describe('Single File Conversion - Crédito Agrícola', () => {
     });
 
     await test.step('Verify the file label changes to show the selected file name', async () => {
-      await expect(budgetPage.locators.singleSection.creditoAgricola.fileLabel()).toContainText('CreditoAgricola.xlsx');
+      await expect(budgetPage.locators.singleSection.creditoAgricola.fileInput()).toContainText('CreditoAgricola.xlsx');
     });
 
     await test.step('Verify the Convert button in the Crédito Agrícola card is now enabled', async () => {

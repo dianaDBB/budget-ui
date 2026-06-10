@@ -11,17 +11,17 @@ test.describe('Page Load and Layout', () => {
     });
 
     await test.step('Verify the ActivoBank card is visible with Convert button disabled', async () => {
-      await expect(budgetPage.locators.singleSection.activoBank.fileLabel()).toContainText('Click to select file');
+      await expect(budgetPage.locators.singleSection.activoBank.fileInput()).toContainText('Click to select file');
       await expect(budgetPage.locators.singleSection.activoBank.convertButton()).toBeDisabled();
     });
 
     await test.step('Verify the Crédito Agrícola card is visible with Convert button disabled', async () => {
-      await expect(budgetPage.locators.singleSection.creditoAgricola.fileLabel()).toContainText('Click to select file');
+      await expect(budgetPage.locators.singleSection.creditoAgricola.fileInput()).toContainText('Click to select file');
       await expect(budgetPage.locators.singleSection.creditoAgricola.convertButton()).toBeDisabled();
     });
 
     await test.step('Verify the Crypto.com card is visible with Convert button disabled', async () => {
-      await expect(budgetPage.locators.singleSection.cryptoCom.fileLabel()).toContainText('Click to select file');
+      await expect(budgetPage.locators.singleSection.cryptoCom.fileInput()).toContainText('Click to select file');
       await expect(budgetPage.locators.singleSection.cryptoCom.convertButton()).toBeDisabled();
     });
   });

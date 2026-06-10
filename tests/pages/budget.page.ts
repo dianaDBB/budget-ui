@@ -3,147 +3,108 @@ import { Page } from '@fixtures';
 export class BudgetPage {
   constructor(public page: Page) {}
 
-  async goTo() {
-    await this.page.goto('/');
-  }
-
   locators = {
     header: {
       title: () => {
-        return this.page.getByRole('heading', { name: 'Budget', exact: true });
+        return this.page.getByTestId('app-title');
       },
       subtitle: () => {
-        return this.page.getByText('Unify different bank extracts to a standardized format');
+        return this.page.getByTestId('app-subtitle');
       },
     },
     intro: {
       heading: () => {
-        return this.page.getByRole('heading', { name: 'Welcome to Budget Application' });
+        return this.page.getByTestId('intro-heading');
       },
       description: () => {
-        return this.page.getByText('Convert different extract files from your bank account');
+        return this.page.getByTestId('intro-description');
       },
     },
     multiSection: {
       sectionHeading: () => {
-        return this.page.getByRole('heading', { name: 'Multiple File Conversion', exact: true });
-      },
-      cardHeading: () => {
-        return this.page.getByRole('heading', { name: 'Convert Multiple Files' });
+        return this.page.getByTestId('multi-section-heading');
       },
       activoBankFileInput: () => {
-        return this.page.locator('#file-activoBank');
+        return this.page.getByTestId('multiple-file-input-activoBank');
       },
       creditoAgricolaFileInput: () => {
-        return this.page.locator('#file-creditoAgricola');
+        return this.page.getByTestId('multiple-file-input-creditoAgricola');
       },
       cryptoComFileInput: () => {
-        return this.page.locator('#file-cryptoCom');
+        return this.page.getByTestId('multiple-file-input-cryptoCom');
       },
       activoBankFileDisplay: () => {
-        return this.page.locator('.multi-converter-card .file-input-group').nth(0).locator('.file-display');
+        return this.page.getByTestId('multiple-file-display-activoBank');
       },
       creditoAgricolaFileDisplay: () => {
-        return this.page.locator('.multi-converter-card .file-input-group').nth(1).locator('.file-display');
+        return this.page.getByTestId('multiple-file-display-creditoAgricola');
       },
       cryptoComFileDisplay: () => {
-        return this.page.locator('.multi-converter-card .file-input-group').nth(2).locator('.file-display');
+        return this.page.getByTestId('multiple-file-display-cryptoCom');
       },
       convertAllButton: () => {
-        return this.page.getByRole('button', { name: 'Convert All' });
+        return this.page.getByTestId('convert-all-button');
       },
       successAlert: () => {
-        return this.page.locator('.multi-converter-card .alert-success');
+        return this.page.getByTestId('multi-section-success');
       },
       errorAlert: () => {
-        return this.page.locator('.multi-converter-card .alert-error');
+        return this.page.getByTestId('multi-section-error');
       },
     },
     singleSection: {
       sectionHeading: () => {
-        return this.page.getByRole('heading', { name: 'Single File Conversion', exact: true });
+        return this.page.getByTestId('single-section-main-heading');
       },
       activoBank: {
         fileInput: () => {
-          return this.page.locator('#file-input-activoBank');
-        },
-        fileLabel: () => {
-          return this.page.locator('label[for="file-input-activoBank"]');
+          return this.page.getByTestId('single-file-input-activoBank');
         },
         convertButton: () => {
-          return this.page
-            .locator('.converter-card')
-            .filter({ has: this.page.getByRole('heading', { name: 'ActivoBank', exact: true }) })
-            .getByRole('button', { name: 'Convert' });
+          return this.page.getByTestId('convert-button-activoBank');
         },
         successAlert: () => {
-          return this.page
-            .locator('.converter-card')
-            .filter({ has: this.page.getByRole('heading', { name: 'ActivoBank', exact: true }) })
-            .locator('.alert-success');
+          return this.page.getByTestId('conversion-success-activoBank');
         },
         errorAlert: () => {
-          return this.page
-            .locator('.converter-card')
-            .filter({ has: this.page.getByRole('heading', { name: 'ActivoBank', exact: true }) })
-            .locator('.alert-error');
+          return this.page.getByTestId('conversion-error-activoBank');
         },
       },
       creditoAgricola: {
         fileInput: () => {
-          return this.page.locator('#file-input-creditoAgricola');
-        },
-        fileLabel: () => {
-          return this.page.locator('label[for="file-input-creditoAgricola"]');
+          return this.page.getByTestId('single-file-input-creditoAgricola');
         },
         convertButton: () => {
-          return this.page
-            .locator('.converter-card')
-            .filter({ has: this.page.getByRole('heading', { name: 'Crédito Agrícola', exact: true }) })
-            .getByRole('button', { name: 'Convert' });
+          return this.page.getByTestId('convert-button-creditoAgricola');
         },
         successAlert: () => {
-          return this.page
-            .locator('.converter-card')
-            .filter({ has: this.page.getByRole('heading', { name: 'Crédito Agrícola', exact: true }) })
-            .locator('.alert-success');
+          return this.page.getByTestId('conversion-success-creditoAgricola');
         },
         errorAlert: () => {
-          return this.page
-            .locator('.converter-card')
-            .filter({ has: this.page.getByRole('heading', { name: 'Crédito Agrícola', exact: true }) })
-            .locator('.alert-error');
+          return this.page.getByTestId('conversion-error-creditoAgricola');
         },
       },
       cryptoCom: {
         fileInput: () => {
-          return this.page.locator('#file-input-cryptoCom');
-        },
-        fileLabel: () => {
-          return this.page.locator('label[for="file-input-cryptoCom"]');
+          return this.page.getByTestId('single-file-input-cryptoCom');
         },
         convertButton: () => {
-          return this.page
-            .locator('.converter-card')
-            .filter({ has: this.page.getByRole('heading', { name: 'Crypto.com', exact: true }) })
-            .getByRole('button', { name: 'Convert' });
+          return this.page.getByTestId('convert-button-cryptoCom');
         },
         successAlert: () => {
-          return this.page
-            .locator('.converter-card')
-            .filter({ has: this.page.getByRole('heading', { name: 'Crypto.com', exact: true }) })
-            .locator('.alert-success');
+          return this.page.getByTestId('conversion-success-cryptoCom');
         },
         errorAlert: () => {
-          return this.page
-            .locator('.converter-card')
-            .filter({ has: this.page.getByRole('heading', { name: 'Crypto.com', exact: true }) })
-            .locator('.alert-error');
+          return this.page.getByTestId('conversion-error-cryptoCom');
         },
       },
     },
     footer: () => {
-      return this.page.getByText('© 2024 Budget. Process your bank statements with ease.');
+      return this.page.getByTestId('app-footer');
     },
   };
+
+  async goTo() {
+    await this.page.goto('/');
+  }
 }

@@ -13,7 +13,7 @@ test.describe('Single File Conversion - Crypto.com', () => {
     });
 
     await test.step('Verify the file label changes to show the selected file name', async () => {
-      await expect(budgetPage.locators.singleSection.cryptoCom.fileLabel()).toContainText('CryptoCom.csv');
+      await expect(budgetPage.locators.singleSection.cryptoCom.fileInput()).toContainText('CryptoCom.csv');
     });
 
     await test.step('Verify the Convert button in the Crypto.com card is now enabled', async () => {

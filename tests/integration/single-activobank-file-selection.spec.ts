@@ -13,7 +13,7 @@ test.describe('Single File Conversion - ActivoBank', () => {
     });
 
     await test.step('Verify the file label changes to show the selected file name', async () => {
-      await expect(budgetPage.locators.singleSection.activoBank.fileLabel()).toContainText('ActivoBank.xlsx');
+      await expect(budgetPage.locators.singleSection.activoBank.fileInput()).toContainText('ActivoBank.xlsx');
     });
 
     await test.step('Verify the Convert button in the ActivoBank card is now enabled', async () => {

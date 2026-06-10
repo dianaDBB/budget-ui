@@ -2,16 +2,16 @@
   <div class="app">
     <header class="app-header">
       <div class="header-content">
-        <h1 class="app-title">Budget</h1>
-        <p class="app-subtitle">Unify different bank extracts to a standardized format</p>
+        <h1 class="app-title" data-testid="app-title">Budget</h1>
+        <p class="app-subtitle" data-testid="app-subtitle">Unify different bank extracts to a standardized format</p>
       </div>
     </header>
 
     <main class="app-main">
       <div class="container">
         <div class="intro-section">
-          <h2>Welcome to Budget Application</h2>
-          <p>
+          <h2 data-testid="intro-heading">Welcome to Budget Application</h2>
+          <p data-testid="intro-description">
             Convert different extract files from your bank account to a standardized format. Choose to convert
             individual bank files or process multiple banks at once.
           </p>
@@ -19,13 +19,13 @@
 
         <!-- Multiple File Conversion -->
         <section class="converters-section">
-          <h2 class="section-title">Multiple File Conversion</h2>
+          <h2 class="section-title" data-testid="multi-section-main-heading">Multiple File Conversion</h2>
           <MultiFileConverter />
         </section>
 
         <!-- Single File Conversion -->
         <section class="converters-section">
-          <h2 class="section-title">Single File Conversion</h2>
+          <h2 class="section-title" data-testid="single-section-main-heading">Single File Conversion</h2>
           <div class="converters-grid">
             <SingleFileConverter v-for="bank in singleBanks" :key="bank.id" :bank-option="bank" />
           </div>
@@ -34,7 +34,7 @@
     </main>
 
     <footer class="app-footer">
-      <p>&copy; 2024 Budget. Process your bank statements with ease.</p>
+      <p data-testid="app-footer">&copy; 2024 Budget. Process your bank statements with ease.</p>
     </footer>
   </div>
 </template>

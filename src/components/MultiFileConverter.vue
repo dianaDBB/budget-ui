@@ -5,8 +5,8 @@
         <img :src="'/logo.png'" width="50" height="50" />
       </div>
       <div class="header-text">
-        <h3>Convert Multiple Files</h3>
-        <p>Upload files from multiple banks and convert them together</p>
+        <h3 data-testid="multi-section-heading">Convert Multiple Files</h3>
+        <p data-testid="multi-section-description">Upload files from multiple banks and convert them together</p>
       </div>
     </div>
 
@@ -20,25 +20,36 @@
             <span v-else class="bank-icon">{{ bank.icon }}</span>
             <span class="bank-name">{{ bank.name }}</span>
           </label>
-          <input :id="`file-${bank.id}`" type="file" class="file-input" @change="(e) => handleFileSelect(e, bank.id)" />
-          <div class="file-display">
+          <input
+            :id="`file-${bank.id}`"
+            type="file"
+            class="file-input"
+            :data-testid="`multiple-file-input-${bank.id}`"
+            @change="(e) => handleFileSelect(e, bank.id)"
+          />
+          <div class="file-display" :data-testid="`multiple-file-display-${bank.id}`">
             <span v-if="selectedFiles[bank.id]" class="file-name"> ✓ {{ selectedFiles[bank.id]?.name }} </span>
             <span v-else class="placeholder">No file selected</span>
           </div>
         </div>
       </div>
 
-      <button :disabled="!hasFiles || status.isLoading" class="btn btn-primary" @click="handleConvertAll">
+      <button
+        :disabled="!hasFiles || status.isLoading"
+        class="btn btn-primary"
+        data-testid="convert-all-button"
+        @click="handleConvertAll"
+      >
         <span v-if="status.isLoading" class="spinner">⚙️</span>
         <span v-else>Convert All</span>
       </button>
 
-      <div v-if="status.isError" class="alert alert-error">
+      <div v-if="status.isError" class="alert alert-error" data-testid="multi-section-error">
         <span class="alert-icon">⚠️</span>
         {{ status.message }}
       </div>
 
-      <div v-if="status.isSuccess" class="alert alert-success">
+      <div v-if="status.isSuccess" class="alert alert-success" data-testid="multi-section-success">
         <span class="alert-icon">✓</span>
         {{ status.message }}
       </div>

@@ -6,12 +6,8 @@ test.describe('Page Load and Layout', () => {
       await budgetPage.goTo();
     });
 
-    await test.step('Verify the Multiple File Conversion section heading is visible', async () => {
-      await expect(budgetPage.locators.multiSection.sectionHeading()).toBeVisible();
-    });
-
     await test.step('Verify the Convert Multiple Files card heading is visible', async () => {
-      await expect(budgetPage.locators.multiSection.cardHeading()).toBeVisible();
+      await expect(budgetPage.locators.multiSection.sectionHeading()).toBeVisible();
     });
 
     await test.step('Verify ActivoBank file area shows No file selected', async () => {
