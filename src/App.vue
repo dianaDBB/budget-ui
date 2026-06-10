@@ -12,8 +12,8 @@
         <div class="intro-section">
           <h2>Welcome to Budget Application</h2>
           <p>
-            Convert different extract files from your bank account to a standardized format.
-            Choose to convert individual bank files or process multiple banks at once.
+            Convert different extract files from your bank account to a standardized format. Choose to convert
+            individual bank files or process multiple banks at once.
           </p>
         </div>
 
@@ -27,11 +27,7 @@
         <section class="converters-section">
           <h2 class="section-title">Single File Conversion</h2>
           <div class="converters-grid">
-            <SingleFileConverter
-              v-for="bank in singleBanks"
-              :key="bank.id"
-              :bank-option="bank"
-            />
+            <SingleFileConverter v-for="bank in singleBanks" :key="bank.id" :bank-option="bank" />
           </div>
         </section>
       </div>
@@ -44,9 +40,9 @@
 </template>
 
 <script setup lang="ts">
-import SingleFileConverter from '@/components/SingleFileConverter.vue'
-import MultiFileConverter from '@/components/MultiFileConverter.vue'
-import type { BankOption } from '@/types'
+import SingleFileConverter from '@/components/SingleFileConverter.vue';
+import MultiFileConverter from '@/components/MultiFileConverter.vue';
+import type { BankOption } from '@/types';
 
 const singleBanks: BankOption[] = [
   {
@@ -54,23 +50,23 @@ const singleBanks: BankOption[] = [
     name: 'ActivoBank',
     endpoint: '/file/activoBank',
     description: 'Convert ActivoBank files',
-    logo: '/AB.png'
+    logo: '/AB.png',
   },
   {
     id: 'creditoAgricola',
     name: 'Crédito Agrícola',
     endpoint: '/file/creditoAgricola',
     description: 'Convert Crédito Agrícola files',
-    logo: '/CA.png'
+    logo: '/CA.png',
   },
   {
     id: 'cryptoCom',
     name: 'Crypto.com',
     endpoint: '/file/cryptoCom',
     description: 'Convert Crypto.com files',
-    logo: '/CY.png'
-  }
-]
+    logo: '/CY.png',
+  },
+];
 </script>
 
 <style scoped lang="scss">

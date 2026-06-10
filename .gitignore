@@ -13,6 +13,8 @@ dist
 dist-ssr
 coverage
 *.local
+.vscode
+mcp.json
 
 # Editor directories and files
 .vscode/*
@@ -27,3 +29,15 @@ coverage
 
 # vite
 .vite/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+.playwright-mcp
+
+# Tests
+tests/output
+tests/reports

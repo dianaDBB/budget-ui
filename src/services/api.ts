@@ -1,9 +1,9 @@
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosInstance } from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL
+const API_BASE_URL = import.meta.env.API_URL;
 
 class BudgetApiService {
-  private client: AxiosInstance
+  private client: AxiosInstance;
 
   constructor() {
     this.client = axios.create({
@@ -11,94 +11,90 @@ class BudgetApiService {
       timeout: 30000,
       withCredentials: false,
       headers: {
-        'Accept': 'application/octet-stream'
-      }
-    })
+        Accept: 'application/octet-stream',
+      },
+    });
 
     // Add request interceptor for debugging
     this.client.interceptors.request.use(
-      config => {
-        console.log(`API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`)
-        return config
+      (config) => {
+        console.log(`API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
+        return config;
       },
-      error => {
-        console.error('Request error:', error)
-        return Promise.reject(error)
-      }
-    )
+      (error) => {
+        console.error('Request error:', error);
+        return Promise.reject(error);
+      },
+    );
 
     // Add response interceptor for debugging
     this.client.interceptors.response.use(
-      response => {
-        console.log(`API Response: ${response.status}`)
-        return response
+      (response) => {
+        console.log(`API Response: ${response.status}`);
+        return response;
       },
-      error => {
-        console.error('Response error:', error)
+      (error) => {
+        console.error('Response error:', error);
         if (error.code === 'ERR_NETWORK') {
-          console.error('Network error - API might not be reachable at', API_BASE_URL)
+          console.error('Network error - API might not be reachable at', API_BASE_URL);
         }
-        return Promise.reject(error)
-      }
-    )
+        return Promise.reject(error);
+      },
+    );
   }
 
   async convertCryptoComFile(file: File): Promise<Blob> {
-    const formData = new FormData()
-    formData.append('file', file)
+    const formData = new FormData();
+    formData.append('file', file);
 
     const response = await this.client.post('/file/cryptoCom', formData, {
-      responseType: 'blob'
-    })
+      responseType: 'blob',
+    });
 
-    return response.data
+    return response.data;
   }
 
   async convertCreditoAgricolaFile(file: File): Promise<Blob> {
-    const formData = new FormData()
-    formData.append('file', file)
+    const formData = new FormData();
+    formData.append('file', file);
 
     const response = await this.client.post('/file/creditoAgricola', formData, {
-      responseType: 'blob'
-    })
+      responseType: 'blob',
+    });
 
-    return response.data
+    return response.data;
   }
 
   async convertActivoBankFile(file: File): Promise<Blob> {
-    const formData = new FormData()
-    formData.append('file', file)
+    const formData = new FormData();
+    formData.append('file', file);
 
     const response = await this.client.post('/file/activoBank', formData, {
-      responseType: 'blob'
-    })
+      responseType: 'blob',
+    });
 
-    return response.data
+    return response.data;
   }
 
-  async convertAllBankFiles(
-    activoBankFile?: File,
-    creditoAgricolaFile?: File,
-    cryptoComFile?: File
-  ): Promise<Blob> {
-    const formData = new FormData()
+  async convertAllBankFiles(activoBankFile?: File, creditoAgricolaFile?: File, cryptoComFile?: File): Promise<Blob> {
+    const formData = new FormData();
 
     if (activoBankFile) {
-      formData.append('activoBankFile', activoBankFile)
+      formData.append('activoBankFile', activoBankFile);
     }
     if (creditoAgricolaFile) {
-      formData.append('creditoAgricolaFile', creditoAgricolaFile)
+      formData.append('creditoAgricolaFile', creditoAgricolaFile);
     }
     if (cryptoComFile) {
-      formData.append('cryptoComFile', cryptoComFile)
+      formData.append('cryptoComFile', cryptoComFile);
     }
 
     const response = await this.client.post('/file/all', formData, {
-      responseType: 'blob'
-    })
+      responseType: 'blob',
+    });
 
-    return response.data
+    return response.data;
   }
 }
 
-export default new BudgetApiService()
+export default new BudgetApiService();

@@ -15,10 +15,10 @@
       <div class="file-input-wrapper">
         <input
           :id="`file-input-${bankOption.id}`"
-          type="file"
           ref="fileInput"
-          @change="handleFileSelect"
+          type="file"
           class="file-input"
+          @change="handleFileSelect"
         />
         <label :for="`file-input-${bankOption.id}`" class="file-label">
           <span v-if="!selectedFile" class="label-text">
@@ -32,11 +32,7 @@
         </label>
       </div>
 
-      <button
-        @click="handleConvert"
-        :disabled="!selectedFile || status.isLoading"
-        class="btn btn-primary"
-      >
+      <button :disabled="!selectedFile || status.isLoading" class="btn btn-primary" @click="handleConvert">
         <span v-if="status.isLoading" class="spinner">⚙️</span>
         <span v-else>Convert</span>
       </button>
@@ -55,80 +51,73 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { BankOption, ConversionStatus } from '@/types'
-import api from '@/services/api'
-import { downloadFile, generateFileName } from '@/utils/fileDownload'
+import { ref } from 'vue';
+import type { BankOption, ConversionStatus } from '@/types';
+import api from '@/services/api';
+import { downloadFile, generateFileName } from '@/utils/fileDownload';
 
 interface Props {
-  bankOption: BankOption
+  bankOption: BankOption;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
-const fileInput = ref<HTMLInputElement>()
-const selectedFile = ref<File | null>(null)
+const fileInput = ref<HTMLInputElement>();
+const selectedFile = ref<File | null>(null);
 const status = ref<ConversionStatus>({
   isLoading: false,
   isSuccess: false,
-  isError: false
-})
+  isError: false,
+});
 
 function handleFileSelect(event: Event): void {
-  const target = event.target as HTMLInputElement
-  const files = target.files
+  const target = event.target as HTMLInputElement;
+  const files = target.files;
   if (files && files.length > 0) {
-    selectedFile.value = files[0]
-    status.value.isError = false
-    status.value.isSuccess = false
+    selectedFile.value = files[0];
+    status.value.isError = false;
+    status.value.isSuccess = false;
   }
 }
 
 async function handleConvert(): Promise<void> {
-  if (!selectedFile.value) return
+  if (!selectedFile.value) return;
 
-  status.value.isLoading = true
-  status.value.isError = false
-  status.value.isSuccess = false
+  status.value.isLoading = true;
+  status.value.isError = false;
+  status.value.isSuccess = false;
 
   try {
-    let blob: Blob
+    let blob: Blob;
 
     switch (props.bankOption.id) {
       case 'cryptoCom':
-        blob = await api.convertCryptoComFile(selectedFile.value)
-        break
+        blob = await api.convertCryptoComFile(selectedFile.value);
+        break;
       case 'creditoAgricola':
-        blob = await api.convertCreditoAgricolaFile(selectedFile.value)
-        break
+        blob = await api.convertCreditoAgricolaFile(selectedFile.value);
+        break;
       case 'activoBank':
-        blob = await api.convertActivoBankFile(selectedFile.value)
-        break
+        blob = await api.convertActivoBankFile(selectedFile.value);
+        break;
       default:
-        throw new Error('Unknown bank option')
+        throw new Error('Unknown bank option');
     }
 
-    const fileName = generateFileName(props.bankOption.name)
-    downloadFile(blob, fileName)
+    const fileName = generateFileName(props.bankOption.name);
+    downloadFile(blob, fileName);
 
-    status.value.isSuccess = true
-    status.value.message = `File converted successfully: ${fileName}`
-    selectedFile.value = null
+    status.value.isSuccess = true;
+    status.value.message = `File converted successfully: ${fileName}`;
+    selectedFile.value = null;
     if (fileInput.value) {
-      fileInput.value.value = ''
+      fileInput.value.value = '';
     }
-  } catch (error: any) {
-    status.value.isError = true
-    if (error.response?.status === 400) {
-      status.value.message = `Bad request: ${error.response?.data?.message || 'Invalid file format'}`
-    } else if (error.message === 'Network Error') {
-      status.value.message = 'Network Error - Make sure the API is running'
-    } else {
-      status.value.message = error instanceof Error ? error.message : 'Failed to convert file'
-    }
-    console.error('Conversion error:', error)
+  } catch (error: unknown) {
+    status.value.isError = true;
+    status.value.message = error instanceof Error ? error.message : 'Failed to convert file';
   } finally {
-    status.value.isLoading = false
+    status.value.isLoading = false;
   }
 }
 </script>
