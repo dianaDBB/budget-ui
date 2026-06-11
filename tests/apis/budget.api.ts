@@ -1,21 +1,15 @@
+import { BankId } from '@data-models/bank-id';
+
 export class BudgetApi {
   static baseUrl(): string {
     return `${process.env.VITE_API_URL}`;
   }
 
-  static generateActivoBankFileUrl(): string {
-    return `${this.baseUrl()}/file/activoBank`;
+  static generateSingleFileUrl(bankId: BankId): string {
+    return `${this.baseUrl()}/file/${bankId}`;
   }
 
-  static generateCreditoAgricolaFileUrl(): string {
-    return `${this.baseUrl()}/file/creditoAgricola`;
-  }
-
-  static generateCryptoComFileUrl(): string {
-    return `${this.baseUrl()}/file/cryptoCom`;
-  }
-
-  static generateAllFilesUrl(): string {
-    return `${this.baseUrl()}/file/all`;
+  static getBankFormatUrl(bankId: BankId): string {
+    return `${this.baseUrl()}/format/${bankId}`;
   }
 }

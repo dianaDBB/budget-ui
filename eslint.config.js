@@ -22,7 +22,7 @@ export default typescriptEslint.config(
       },
     },
     rules: {
-      // your rules
+      // add custom rules here
     },
   },
   eslintConfigPrettier,

@@ -1,3 +1,4 @@
+import { BankId } from '@data-models/bank-id';
 import { test, expect } from '@fixtures';
 import path from 'path';
 
@@ -5,7 +6,7 @@ test.describe('Single File Conversion - Crédito Agrícola', () => {
   test.beforeEach(async ({ mockSetup, budgetMock }) => {
     await mockSetup.setMockMode();
 
-    await budgetMock.mockGenerateCreditoAgricolaFile({ success: true });
+    await budgetMock.mockGenerateFile({ bankId: BankId.creditoAgricola, success: true });
   });
 
   test('should show success alert and reset inputs after successful conversion', async ({ budgetPage }) => {

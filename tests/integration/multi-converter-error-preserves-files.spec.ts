@@ -1,3 +1,4 @@
+import { BankId } from '@data-models/bank-id';
 import { test, expect } from '@fixtures';
 import path from 'path';
 
@@ -5,7 +6,7 @@ test.describe('Multiple File Conversion', () => {
   test.beforeEach(async ({ mockSetup, budgetMock }) => {
     await mockSetup.setMockMode();
 
-    await budgetMock.mockGenerateAllFiles({ success: false });
+    await budgetMock.mockGenerateFile({ bankId: BankId.all, success: false });
   });
 
   test('should not clear previously selected files after a failed conversion', async ({ budgetPage }) => {

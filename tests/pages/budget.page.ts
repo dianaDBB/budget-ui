@@ -1,5 +1,6 @@
 import { Page } from '@fixtures';
 import { BasePage } from './base.page';
+import { BankId } from '@data-models/bank-id';
 
 export class BudgetPage extends BasePage {
   constructor(public page: Page) {
@@ -54,6 +55,26 @@ export class BudgetPage extends BasePage {
       errorAlert: () => {
         return this.getLocatorSource().getByTestId('multi-section-error');
       },
+      formatInfoButton: () => {
+        return this.getLocatorSource().getByTestId('multi-section-format-info-button');
+      },
+      formatInfoPopover: {
+        header: () => {
+          return this.getLocatorSource().getByTestId('multi-section-format-info-header');
+        },
+        closeButton: () => {
+          return this.getLocatorSource().getByTestId('multi-section-format-info-close-button');
+        },
+        bankSection: (bankId: BankId) => {
+          return this.getLocatorSource().getByTestId(`multi-section-bank-format-section-${bankId}`);
+        },
+        bankBadge: (bankId: BankId) => {
+          return this.getLocatorSource().getByTestId(`multi-section-bank-format-badge-${bankId}`);
+        },
+        bankHtmlContent: (bankId: BankId) => {
+          return this.getLocatorSource().getByTestId(`multi-section-bank-format-html-${bankId}`);
+        },
+      },
     },
     singleSection: {
       sectionHeading: () => {
@@ -72,6 +93,9 @@ export class BudgetPage extends BasePage {
         errorAlert: () => {
           return this.getLocatorSource().getByTestId('conversion-error-activoBank');
         },
+        formatInfoButton: () => {
+          return this.getLocatorSource().getByTestId('single-file-format-info-button-activoBank');
+        },
       },
       creditoAgricola: {
         fileInput: () => {
@@ -86,6 +110,9 @@ export class BudgetPage extends BasePage {
         errorAlert: () => {
           return this.getLocatorSource().getByTestId('conversion-error-creditoAgricola');
         },
+        formatInfoButton: () => {
+          return this.getLocatorSource().getByTestId('single-file-format-info-button-creditoAgricola');
+        },
       },
       cryptoCom: {
         fileInput: () => {
@@ -99,6 +126,23 @@ export class BudgetPage extends BasePage {
         },
         errorAlert: () => {
           return this.getLocatorSource().getByTestId('conversion-error-cryptoCom');
+        },
+        formatInfoButton: () => {
+          return this.getLocatorSource().getByTestId('single-file-format-info-button-cryptoCom');
+        },
+      },
+      formatInfoPopover: {
+        header: (bankId: BankId) => {
+          return this.getLocatorSource().getByTestId(`single-file-format-info-header-${bankId}`);
+        },
+        closeButton: () => {
+          return this.getLocatorSource().getByTestId('single-file-format-info-close-button');
+        },
+        badge: () => {
+          return this.getLocatorSource().getByTestId('single-file-format-info-badge');
+        },
+        htmlContent: () => {
+          return this.getLocatorSource().getByTestId('single-file-format-info-html');
         },
       },
     },

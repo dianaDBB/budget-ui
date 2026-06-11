@@ -8,29 +8,55 @@
         <h3 data-testid="multi-section-heading">Convert Multiple Files</h3>
         <p data-testid="multi-section-description">Upload files from multiple banks and convert them together</p>
       </div>
-      <button class="info-btn" aria-label="Format info for all banks" @click.stop="toggleFormatInfo">ⓘ</button>
+      <button
+        class="info-btn"
+        aria-label="Format info for all banks"
+        data-testid="multi-section-format-info-button"
+        @click.stop="toggleFormatInfo"
+      >
+        ⓘ
+      </button>
     </div>
 
     <div v-if="showFormatInfo" class="format-popover" @click.self="showFormatInfo = false">
       <div class="format-popover-content">
         <div class="format-popover-header">
-          <span>File examples</span>
-          <button class="close-btn" @click="showFormatInfo = false">✕</button>
+          <span data-testid="multi-section-format-info-header">File examples</span>
+          <button
+            class="close-btn"
+            data-testid="multi-section-format-info-close-button"
+            @click="showFormatInfo = false"
+          >
+            ✕
+          </button>
         </div>
         <div class="format-popover-body">
           <div v-if="formatsLoading" class="format-loading">Loading…</div>
           <div v-else-if="formatsError" class="format-error">{{ formatsError }}</div>
           <template v-else>
-            <div v-for="bank in banks" :key="bank.id" class="bank-format-section">
+            <div
+              v-for="bank in banks"
+              :key="bank.id"
+              class="bank-format-section"
+              :data-testid="`multi-section-bank-format-section-${bank.id}`"
+            >
               <div class="bank-format-title">
                 <span v-if="bank.logo" class="bank-logo-sm"><img :src="bank.logo" :alt="bank.name" /></span>
                 <strong>{{ bank.name }}</strong>
-                <span v-if="formatsData[bank.id]?.fileFormat" class="format-badge">{{
-                  formatsData[bank.id]?.fileFormat
-                }}</span>
+                <span
+                  v-if="formatsData[bank.id]?.fileFormat"
+                  class="format-badge"
+                  :data-testid="`multi-section-bank-format-badge-${bank.id}`"
+                  >{{ formatsData[bank.id]?.fileFormat }}</span
+                >
               </div>
               <!-- eslint-disable-next-line vue/no-v-html -->
-              <div v-if="formatsData[bank.id]?.html" class="format-html" v-html="formatsData[bank.id]?.html" />
+              <div
+                v-if="formatsData[bank.id]?.html"
+                class="format-html"
+                :data-testid="`multi-section-bank-format-html-${bank.id}`"
+                v-html="formatsData[bank.id]?.html"
+              />
             </div>
           </template>
         </div>

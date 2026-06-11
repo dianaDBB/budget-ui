@@ -325,3 +325,118 @@ The Budget UI (https://budget-ui-ht2i.onrender.com/) is a bank statement file co
    - expect: The ActivoBank file area still shows the selected file name (not 'No file selected')
    - expect: The Crédito Agrícola file area still shows the selected file name (not 'No file selected')
    - expect: The Crypto.com file area still shows the selected file name (not 'No file selected')
+
+### 6. Format Info — Single File Conversion
+
+**Seed:** `tests/seed.spec.ts`
+
+> Each single-converter card has an ⓘ icon button. Clicking it opens a modal showing the bank name, file format badge, and an HTML example table. The format data is fetched lazily from the API on first open and cached.
+
+#### 6.1. should display the info icon button on each bank card
+
+**File:** `tests/integration/single-format-info-button.spec.ts`
+
+**Steps:**
+
+1. Navigate to the Budget UI application
+   - expect: The info icon button is visible on the ActivoBank card
+   - expect: The info icon button is visible on the Crédito Agrícola card
+   - expect: The info icon button is visible on the Crypto.com card
+
+#### 6.2. should open the format popover for ActivoBank when clicking the info button
+
+**File:** `tests/integration/single-activobank-format-info.spec.ts`
+
+**Steps:**
+
+1. Navigate to the Budget UI application
+2. Mock the `GET /format/activoBank` endpoint to return a valid format response with `fileFormat` and `htmlExample`
+3. Click the info icon button on the ActivoBank card
+   - expect: The format popover is visible
+   - expect: The popover header contains 'ActivoBank'
+   - expect: The file format badge is visible showing the mocked file format (e.g. 'XLSX')
+   - expect: The HTML example content is rendered in the popover body
+
+#### 6.3. should open the format popover for Crédito Agrícola when clicking the info button
+
+**File:** `tests/integration/single-credito-agricola-format-info.spec.ts`
+
+**Steps:**
+
+1. Navigate to the Budget UI application
+2. Mock the `GET /format/creditoAgricola` endpoint to return a valid format response with `fileFormat` and `htmlExample`
+3. Click the info icon button on the Crédito Agrícola card
+   - expect: The format popover is visible
+   - expect: The popover header contains 'Crédito Agrícola'
+   - expect: The file format badge is visible showing the mocked file format (e.g. 'XLSX')
+   - expect: The HTML example content is rendered in the popover body
+
+#### 6.4. should open the format popover for Crypto.com when clicking the info button
+
+**File:** `tests/integration/single-cryptocom-format-info.spec.ts`
+
+**Steps:**
+
+1. Navigate to the Budget UI application
+2. Mock the `GET /format/cryptoCom` endpoint to return a valid format response with `fileFormat` and `htmlExample`
+3. Click the info icon button on the Crypto.com card
+   - expect: The format popover is visible
+   - expect: The popover header contains 'Crypto.com'
+   - expect: The file format badge is visible showing the mocked file format (e.g. 'CSV')
+   - expect: The HTML example content is rendered in the popover body
+
+#### 6.5. should close the format popover when clicking the close button
+
+**File:** `tests/integration/single-format-info-close.spec.ts`
+
+**Steps:**
+
+1. Navigate to the Budget UI application
+2. Mock the `GET /format/activoBank` endpoint to return a valid format response
+3. Click the info icon button on the ActivoBank card
+   - expect: The format popover is visible
+4. Click the close (✕) button inside the popover
+   - expect: The format popover is no longer visible
+
+### 7. Format Info — Multiple File Conversion
+
+**Seed:** `tests/seed.spec.ts`
+
+> The Multiple File Conversion card has a single ⓘ icon button in the header. Clicking it opens a modal that fetches all three bank formats in parallel and displays them as separate sections, each with the bank name, file format badge, and HTML example table.
+
+#### 7.1. should display the info icon button on the Multiple File Conversion card
+
+**File:** `tests/integration/multi-format-info-button.spec.ts`
+
+**Steps:**
+
+1. Navigate to the Budget UI application
+   - expect: The info icon button (aria-label 'Format info for all banks') is visible in the Multiple File Conversion card header
+
+#### 7.2. should open the format popover showing all three bank formats
+
+**File:** `tests/integration/multi-format-info-popover.spec.ts`
+
+**Steps:**
+
+1. Navigate to the Budget UI application
+2. Mock the `GET /format/activoBank`, `GET /format/creditoAgricola`, and `GET /format/cryptoCom` endpoints to return valid format responses with `fileFormat` and `htmlExample`
+3. Click the info icon button on the Multiple File Conversion card
+   - expect: The format popover is visible
+   - expect: The popover header contains 'File examples'
+   - expect: A section for ActivoBank is visible with its file format badge and HTML example
+   - expect: A section for Crédito Agrícola is visible with its file format badge and HTML example
+   - expect: A section for Crypto.com is visible with its file format badge and HTML example
+
+#### 7.3. should close the format popover when clicking the close button
+
+**File:** `tests/integration/multi-format-info-close.spec.ts`
+
+**Steps:**
+
+1. Navigate to the Budget UI application
+2. Mock all three `GET /format/{bankId}` endpoints to return valid format responses
+3. Click the info icon button on the Multiple File Conversion card
+   - expect: The format popover is visible
+4. Click the close (✕) button inside the popover
+   - expect: The format popover is no longer visible

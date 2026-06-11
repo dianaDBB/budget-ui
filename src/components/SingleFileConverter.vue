@@ -11,7 +11,7 @@
       </div>
       <button
         class="info-btn"
-        data-testid="format-info-button"
+        :data-testid="`single-file-format-info-button-${bankOption.id}`"
         :aria-label="`Format info for ${bankOption.name}`"
         @click.stop="toggleFormatInfo"
       >
@@ -21,18 +21,27 @@
 
     <div v-if="showFormatInfo" class="format-popover" @click.self="showFormatInfo = false">
       <div class="format-popover-content">
-        <div class="format-popover-header">
+        <div class="format-popover-header" :data-testid="`single-file-format-info-header-${bankOption.id}`">
           <span>
             {{ bankOption.name }} — File example
-            <span v-if="formatFileFormat" class="format-badge">{{ formatFileFormat }}</span>
+            <span v-if="formatFileFormat" class="format-badge" data-testid="single-file-format-info-badge">{{
+              formatFileFormat
+            }}</span>
           </span>
-          <button class="close-btn" @click="showFormatInfo = false">✕</button>
+          <button class="close-btn" data-testid="single-file-format-info-close-button" @click="showFormatInfo = false">
+            ✕
+          </button>
         </div>
         <div class="format-popover-body">
           <div v-if="formatLoading" class="format-loading">Loading…</div>
           <div v-else-if="formatError" class="format-error">{{ formatError }}</div>
           <!-- eslint-disable-next-line vue/no-v-html -->
-          <div v-else-if="formatHtml" class="format-html" v-html="formatHtml" />
+          <div
+            v-else-if="formatHtml"
+            class="format-html"
+            data-testid="single-file-format-info-html"
+            v-html="formatHtml"
+          />
         </div>
       </div>
     </div>
