@@ -1,11 +1,26 @@
 import { test as base, expect, Locator } from '@playwright/test';
 import { BudgetPage } from '@pages/budget.page';
+import { BudgetApiMock } from '@mocks/budget-api.mock';
+import { MockSetup } from '@mocks/mock-setup';
 
 export interface BaseFixtures {
+  mockSetup: MockSetup;
+  budgetMock: BudgetApiMock;
+
   budgetPage: BudgetPage;
 }
 
 export const test = base.extend<BaseFixtures>({
+  mockSetup: async ({ page }, use) => {
+    const mockSetup = new MockSetup(page);
+    await use(mockSetup);
+  },
+
+  budgetMock: async ({ budgetPage }, use) => {
+    const budgetMock = new BudgetApiMock(budgetPage);
+    await use(budgetMock);
+  },
+
   budgetPage: async ({ page }, use) => {
     const budgetPage = new BudgetPage(page);
     await use(budgetPage);

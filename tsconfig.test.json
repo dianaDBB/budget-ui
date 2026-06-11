@@ -17,7 +17,10 @@
     "noUnusedParameters": true,
     "paths": {
       "@pages/*": ["./tests/pages/*"],
-      "@fixtures": ["./tests/fixtures.ts"]
+      "@fixtures": ["./tests/fixtures.ts"],
+      "@mocks/*": ["./tests/mocks/*"],
+      "@data-models/*": ["./tests/data-models/*"],
+      "@apis/*": ["./tests/apis/*"]
     }
   }
 }

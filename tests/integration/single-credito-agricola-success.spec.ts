@@ -2,6 +2,12 @@ import { test, expect } from '@fixtures';
 import path from 'path';
 
 test.describe('Single File Conversion - Crédito Agrícola', () => {
+  test.beforeEach(async ({ mockSetup, budgetMock }) => {
+    await mockSetup.setMockMode();
+
+    await budgetMock.mockGenerateCreditoAgricolaFile({ success: true });
+  });
+
   test('should show success alert and reset inputs after successful conversion', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
       await budgetPage.goTo();

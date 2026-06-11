@@ -1,6 +1,10 @@
 import { test, expect } from '@fixtures';
 
 test.describe('Page Load and Layout', () => {
+  test.beforeEach(async ({ mockSetup }) => {
+    await mockSetup.setMockMode();
+  });
+
   test('should display the page header correctly', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application and wait for network idle', async () => {
       await budgetPage.goTo();

@@ -1,6 +1,10 @@
 import { test, expect } from '@fixtures';
 
 test.describe('Single File Conversion - ActivoBank', () => {
+  test.beforeEach(async ({ mockSetup }) => {
+    await mockSetup.setMockMode();
+  });
+
   test('should have Convert button disabled before file selection', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
       await budgetPage.goTo();

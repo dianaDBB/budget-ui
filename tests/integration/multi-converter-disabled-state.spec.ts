@@ -1,6 +1,10 @@
 import { test, expect } from '@fixtures';
 
 test.describe('Multiple File Conversion', () => {
+  test.beforeEach(async ({ mockSetup }) => {
+    await mockSetup.setMockMode();
+  });
+
   test('should have Convert All button disabled when no files are selected', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
       await budgetPage.goTo();

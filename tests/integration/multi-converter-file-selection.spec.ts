@@ -2,6 +2,10 @@ import { test, expect } from '@fixtures';
 import path from 'path';
 
 test.describe('Multiple File Conversion', () => {
+  test.beforeEach(async ({ mockSetup }) => {
+    await mockSetup.setMockMode();
+  });
+
   test('should enable Convert All button when at least one file is selected', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
       await budgetPage.goTo();
