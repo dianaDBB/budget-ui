@@ -11,7 +11,7 @@ test.describe('Single File Conversion - ActivoBank', () => {
     });
 
     await test.step('Verify the Convert button inside the ActivoBank card is disabled', async () => {
-      await expect(budgetPage.locators.singleSection.activoBank.convertButton()).toBeDisabled();
+      await expect(budgetPage.locators.singleFile.activoBank.convertButton()).toBeDisabled();
     });
   });
 });

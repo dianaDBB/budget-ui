@@ -1,17 +1,13 @@
 import { test, expect } from '@fixtures';
 
-test.describe('Format Info — Multiple File Conversion', () => {
-  test.beforeEach(async ({ mockSetup }) => {
+test.describe('Scenario 7.1 - Multi section format info button visible', () => {
+  test('should show a format info button in the multiple file conversion section', async ({
+    mockSetup,
+    budgetPage,
+  }) => {
     await mockSetup.setMockMode();
-  });
+    await budgetPage.goTo();
 
-  test('should display the info icon button on the Multiple File Conversion card', async ({ budgetPage }) => {
-    await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
-    });
-
-    await test.step('Verify the info icon button is visible in the Multiple File Conversion card header', async () => {
-      await expect(budgetPage.locators.multiSection.formatInfoButton()).toBeVisible();
-    });
+    await expect(budgetPage.locators.multiFile.formatInfo.button()).toBeVisible();
   });
 });

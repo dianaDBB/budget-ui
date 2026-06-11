@@ -13,15 +13,15 @@ test.describe('Single File Conversion - ActivoBank', () => {
 
     await test.step('Upload a file to the ActivoBank file input', async () => {
       const filePath = path.join(process.cwd(), `/tests/resources/ActivoBank.xlsx`);
-      await budgetPage.locators.singleSection.activoBank.fileInput().setInputFiles(filePath);
+      await budgetPage.locators.singleFile.activoBank.fileInput().setInputFiles(filePath);
     });
 
     await test.step('Verify the file label changes to show the selected file name', async () => {
-      await expect(budgetPage.locators.singleSection.activoBank.fileInput()).toContainText('ActivoBank.xlsx');
+      await expect(budgetPage.locators.singleFile.activoBank.fileInput()).toContainText('ActivoBank.xlsx');
     });
 
     await test.step('Verify the Convert button in the ActivoBank card is now enabled', async () => {
-      await expect(budgetPage.locators.singleSection.activoBank.convertButton()).toBeEnabled();
+      await expect(budgetPage.locators.singleFile.activoBank.convertButton()).toBeEnabled();
     });
   });
 });

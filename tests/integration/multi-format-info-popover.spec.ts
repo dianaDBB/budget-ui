@@ -1,51 +1,37 @@
 import { BankId } from '@data-models/bank-id';
 import { test, expect } from '@fixtures';
 
-test.describe('Format Info — Multiple File Conversion', () => {
-  test.beforeEach(async ({ mockSetup, budgetMock }) => {
+test.describe('Scenario 7.2 - Multi format info popover shows all bank formats', () => {
+  test('should show format info popover with all three bank sections, badges and html', async ({
+    mockSetup,
+    budgetMock,
+    budgetPage,
+  }) => {
     await mockSetup.setMockMode();
     await budgetMock.mockGetBankFormat({ bankId: BankId.activoBank });
     await budgetMock.mockGetBankFormat({ bankId: BankId.creditoAgricola });
     await budgetMock.mockGetBankFormat({ bankId: BankId.cryptoCom });
-  });
+    await budgetPage.goTo();
 
-  test('should open the format popover showing all three bank formats', async ({ budgetPage }) => {
-    await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
-    });
+    await budgetPage.locators.multiFile.formatInfo.button().click();
 
-    await test.step('Click the info icon button on the Multiple File Conversion card', async () => {
-      await budgetPage.locators.multiSection.formatInfoButton().click();
-    });
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.header()).toBeVisible();
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.header()).toContainText('Example of input files');
 
-    await test.step('Verify the format popover header is visible', async () => {
-      await expect(budgetPage.locators.multiSection.formatInfoPopover.header()).toBeVisible();
-    });
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.bankSection(BankId.activoBank)).toBeVisible();
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.fileExtension(BankId.activoBank)).toContainText(
+      'XLSX',
+    );
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.htmlExample(BankId.activoBank)).toBeVisible();
 
-    await test.step('Verify the ActivoBank section is visible with its format badge and HTML example', async () => {
-      await expect(budgetPage.locators.multiSection.formatInfoPopover.bankSection(BankId.activoBank)).toBeVisible();
-      await expect(budgetPage.locators.multiSection.formatInfoPopover.bankBadge(BankId.activoBank)).toContainText(
-        'XLSX',
-      );
-      await expect(budgetPage.locators.multiSection.formatInfoPopover.bankHtmlContent(BankId.activoBank)).toBeVisible();
-    });
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.bankSection(BankId.creditoAgricola)).toBeVisible();
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.fileExtension(BankId.creditoAgricola)).toContainText(
+      'XLSX',
+    );
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.htmlExample(BankId.creditoAgricola)).toBeVisible();
 
-    await test.step('Verify the Crédito Agrícola section is visible with its format badge and HTML example', async () => {
-      await expect(
-        budgetPage.locators.multiSection.formatInfoPopover.bankSection(BankId.creditoAgricola),
-      ).toBeVisible();
-      await expect(budgetPage.locators.multiSection.formatInfoPopover.bankBadge(BankId.creditoAgricola)).toContainText(
-        'XLSX',
-      );
-      await expect(
-        budgetPage.locators.multiSection.formatInfoPopover.bankHtmlContent(BankId.creditoAgricola),
-      ).toBeVisible();
-    });
-
-    await test.step('Verify the Crypto.com section is visible with its format badge and HTML example', async () => {
-      await expect(budgetPage.locators.multiSection.formatInfoPopover.bankSection(BankId.cryptoCom)).toBeVisible();
-      await expect(budgetPage.locators.multiSection.formatInfoPopover.bankBadge(BankId.cryptoCom)).toContainText('CSV');
-      await expect(budgetPage.locators.multiSection.formatInfoPopover.bankHtmlContent(BankId.cryptoCom)).toBeVisible();
-    });
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.bankSection(BankId.cryptoCom)).toBeVisible();
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.fileExtension(BankId.cryptoCom)).toContainText('CSV');
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.htmlExample(BankId.cryptoCom)).toBeVisible();
   });
 });

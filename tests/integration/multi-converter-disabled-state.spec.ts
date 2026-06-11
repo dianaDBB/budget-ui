@@ -11,13 +11,13 @@ test.describe('Multiple File Conversion', () => {
     });
 
     await test.step('Verify all three file areas show No file selected', async () => {
-      await expect(budgetPage.locators.multiSection.activoBankFileDisplay()).toContainText('No file selected');
-      await expect(budgetPage.locators.multiSection.creditoAgricolaFileDisplay()).toContainText('No file selected');
-      await expect(budgetPage.locators.multiSection.cryptoComFileDisplay()).toContainText('No file selected');
+      await expect(budgetPage.locators.multiFile.activoBank.selectedFile()).toContainText('No file selected');
+      await expect(budgetPage.locators.multiFile.creditoAgricola.selectedFile()).toContainText('No file selected');
+      await expect(budgetPage.locators.multiFile.cryptoCom.selectedFile()).toContainText('No file selected');
     });
 
     await test.step('Verify the Convert All button is disabled', async () => {
-      await expect(budgetPage.locators.multiSection.convertAllButton()).toBeDisabled();
+      await expect(budgetPage.locators.multiFile.convertAllButton()).toBeDisabled();
     });
   });
 });

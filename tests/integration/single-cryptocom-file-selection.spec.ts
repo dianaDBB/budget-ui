@@ -13,15 +13,15 @@ test.describe('Single File Conversion - Crypto.com', () => {
 
     await test.step('Upload a file to the Crypto.com file input', async () => {
       const filePath = path.join(process.cwd(), `/tests/resources/CryptoCom.csv`);
-      await budgetPage.locators.singleSection.cryptoCom.fileInput().setInputFiles(filePath);
+      await budgetPage.locators.singleFile.cryptoCom.fileInput().setInputFiles(filePath);
     });
 
     await test.step('Verify the file label changes to show the selected file name', async () => {
-      await expect(budgetPage.locators.singleSection.cryptoCom.fileInput()).toContainText('CryptoCom.csv');
+      await expect(budgetPage.locators.singleFile.cryptoCom.fileInput()).toContainText('CryptoCom.csv');
     });
 
     await test.step('Verify the Convert button in the Crypto.com card is now enabled', async () => {
-      await expect(budgetPage.locators.singleSection.cryptoCom.convertButton()).toBeEnabled();
+      await expect(budgetPage.locators.singleFile.cryptoCom.convertButton()).toBeEnabled();
     });
   });
 });

@@ -1,6 +1,5 @@
 import { Page } from '@fixtures';
 import { BasePage } from './base.page';
-import { BankId } from '@data-models/bank-id';
 
 export class BudgetPage extends BasePage {
   constructor(public page: Page) {
@@ -9,146 +8,122 @@ export class BudgetPage extends BasePage {
 
   locators = {
     header: {
-      title: () => {
-        return this.getLocatorSource().getByTestId('app-title');
-      },
-      subtitle: () => {
-        return this.getLocatorSource().getByTestId('app-subtitle');
-      },
+      title: () => this.getLocatorSource().getByTestId('app-title'),
+      subtitle: () => this.getLocatorSource().getByTestId('app-subtitle'),
     },
     intro: {
-      heading: () => {
-        return this.getLocatorSource().getByTestId('intro-heading');
-      },
-      description: () => {
-        return this.getLocatorSource().getByTestId('intro-description');
-      },
+      heading: () => this.getLocatorSource().getByTestId('intro-header'),
+      description: () => this.getLocatorSource().getByTestId('intro-desc'),
     },
-    multiSection: {
-      sectionHeading: () => {
-        return this.getLocatorSource().getByTestId('multi-section-heading');
-      },
-      activoBankFileInput: () => {
-        return this.getLocatorSource().getByTestId('multiple-file-input-activoBank');
-      },
-      creditoAgricolaFileInput: () => {
-        return this.getLocatorSource().getByTestId('multiple-file-input-creditoAgricola');
-      },
-      cryptoComFileInput: () => {
-        return this.getLocatorSource().getByTestId('multiple-file-input-cryptoCom');
-      },
-      activoBankFileDisplay: () => {
-        return this.getLocatorSource().getByTestId('multiple-file-display-activoBank');
-      },
-      creditoAgricolaFileDisplay: () => {
-        return this.getLocatorSource().getByTestId('multiple-file-display-creditoAgricola');
-      },
-      cryptoComFileDisplay: () => {
-        return this.getLocatorSource().getByTestId('multiple-file-display-cryptoCom');
-      },
-      convertAllButton: () => {
-        return this.getLocatorSource().getByTestId('convert-all-button');
-      },
-      successAlert: () => {
-        return this.getLocatorSource().getByTestId('multi-section-success');
-      },
-      errorAlert: () => {
-        return this.getLocatorSource().getByTestId('multi-section-error');
-      },
-      formatInfoButton: () => {
-        return this.getLocatorSource().getByTestId('multi-section-format-info-button');
-      },
-      formatInfoPopover: {
-        header: () => {
-          return this.getLocatorSource().getByTestId('multi-section-format-info-header');
-        },
-        closeButton: () => {
-          return this.getLocatorSource().getByTestId('multi-section-format-info-close-button');
-        },
-        bankSection: (bankId: BankId) => {
-          return this.getLocatorSource().getByTestId(`multi-section-bank-format-section-${bankId}`);
-        },
-        bankBadge: (bankId: BankId) => {
-          return this.getLocatorSource().getByTestId(`multi-section-bank-format-badge-${bankId}`);
-        },
-        bankHtmlContent: (bankId: BankId) => {
-          return this.getLocatorSource().getByTestId(`multi-section-bank-format-html-${bankId}`);
-        },
-      },
-    },
-    singleSection: {
-      sectionHeading: () => {
-        return this.getLocatorSource().getByTestId('single-section-main-heading');
-      },
+    multiFile: {
+      section: () => this.getLocatorSource().getByTestId('multi-file-section'),
+      header: () => this.locators.multiFile.section().getByTestId('header'),
+      convertAllButton: () => this.locators.multiFile.section().getByTestId('convert-all-button'),
+      successAlert: () => this.locators.multiFile.section().getByTestId('success-alert'),
+      errorAlert: () => this.locators.multiFile.section().getByTestId('error-alert'),
       activoBank: {
-        fileInput: () => {
-          return this.getLocatorSource().getByTestId('single-file-input-activoBank');
+        section: () => this.locators.multiFile.section().getByTestId('bank-activoBank-card'),
+        fileInput: () => this.locators.multiFile.activoBank.section().getByTestId('file-input'),
+        selectedFile: () => this.locators.multiFile.activoBank.section().getByTestId('selected-file-label'),
+      },
+      creditoAgricola: {
+        section: () => this.locators.multiFile.section().getByTestId('bank-creditoAgricola-card'),
+        fileInput: () => this.locators.multiFile.creditoAgricola.section().getByTestId('file-input'),
+        selectedFile: () => this.locators.multiFile.creditoAgricola.section().getByTestId('selected-file-label'),
+      },
+      cryptoCom: {
+        section: () => this.locators.multiFile.section().getByTestId('bank-cryptoCom-card'),
+        fileInput: () => this.locators.multiFile.cryptoCom.section().getByTestId('file-input'),
+        selectedFile: () => this.locators.multiFile.cryptoCom.section().getByTestId('selected-file-label'),
+      },
+      formatInfo: {
+        button: () => this.locators.multiFile.section().getByTestId('format-info-button'),
+        popover: {
+          section: () => this.getLocatorSource().getByTestId('format-info-popover'),
+          header: () => this.locators.multiFile.formatInfo.popover.section().getByTestId('header'),
+          closeButton: () => this.locators.multiFile.formatInfo.popover.section().getByTestId('close-button'),
+          bankSection: (bankId: string) =>
+            this.locators.multiFile.formatInfo.popover.section().getByTestId(`bank-${bankId}-section`),
+          fileExtension: (bankId: string) => {
+            const bankSection = this.locators.multiFile.formatInfo.popover
+              .section()
+              .getByTestId(`bank-${bankId}-section`);
+            return bankSection.getByTestId('file-extension-badge');
+          },
+          htmlExample: (bankId: string) => {
+            const bankSection = this.locators.multiFile.formatInfo.popover
+              .section()
+              .getByTestId(`bank-${bankId}-section`);
+            return bankSection.getByTestId('example-html');
+          },
         },
-        convertButton: () => {
-          return this.getLocatorSource().getByTestId('convert-button-activoBank');
-        },
-        successAlert: () => {
-          return this.getLocatorSource().getByTestId('conversion-success-activoBank');
-        },
-        errorAlert: () => {
-          return this.getLocatorSource().getByTestId('conversion-error-activoBank');
-        },
-        formatInfoButton: () => {
-          return this.getLocatorSource().getByTestId('single-file-format-info-button-activoBank');
+      },
+    },
+    singleFile: {
+      section: () => this.getLocatorSource().getByTestId('single-file-section'),
+      header: () => this.locators.singleFile.section().getByTestId('main-header'),
+      activoBank: {
+        section: () => this.locators.singleFile.section().getByTestId('bank-activoBank-card'),
+        fileInput: () => this.locators.singleFile.activoBank.section().getByTestId('file-input'),
+        convertButton: () => this.locators.singleFile.activoBank.section().getByTestId('convert-button'),
+        successAlert: () => this.locators.singleFile.activoBank.section().getByTestId('success-alert'),
+        errorAlert: () => this.locators.singleFile.activoBank.section().getByTestId('error-alert'),
+        formatInfo: {
+          button: () => this.locators.singleFile.activoBank.section().getByTestId('format-info-button'),
+          popover: {
+            section: () => this.getLocatorSource().getByTestId('format-info-popover'),
+            header: () => this.locators.singleFile.activoBank.formatInfo.popover.section().getByTestId('header'),
+            closeButton: () =>
+              this.locators.singleFile.activoBank.formatInfo.popover.section().getByTestId('close-button'),
+            fileExtension: () =>
+              this.locators.singleFile.activoBank.formatInfo.popover.section().getByTestId('file-extension-badge'),
+            htmlExample: () =>
+              this.locators.singleFile.activoBank.formatInfo.popover.section().getByTestId('example-html'),
+          },
         },
       },
       creditoAgricola: {
-        fileInput: () => {
-          return this.getLocatorSource().getByTestId('single-file-input-creditoAgricola');
-        },
-        convertButton: () => {
-          return this.getLocatorSource().getByTestId('convert-button-creditoAgricola');
-        },
-        successAlert: () => {
-          return this.getLocatorSource().getByTestId('conversion-success-creditoAgricola');
-        },
-        errorAlert: () => {
-          return this.getLocatorSource().getByTestId('conversion-error-creditoAgricola');
-        },
-        formatInfoButton: () => {
-          return this.getLocatorSource().getByTestId('single-file-format-info-button-creditoAgricola');
+        section: () => this.locators.singleFile.section().getByTestId('bank-creditoAgricola-card'),
+        fileInput: () => this.locators.singleFile.creditoAgricola.section().getByTestId('file-input'),
+        convertButton: () => this.locators.singleFile.creditoAgricola.section().getByTestId('convert-button'),
+        successAlert: () => this.locators.singleFile.creditoAgricola.section().getByTestId('success-alert'),
+        errorAlert: () => this.locators.singleFile.creditoAgricola.section().getByTestId('error-alert'),
+        formatInfo: {
+          button: () => this.locators.singleFile.creditoAgricola.section().getByTestId('format-info-button'),
+          popover: {
+            section: () => this.getLocatorSource().getByTestId('format-info-popover'),
+            header: () => this.locators.singleFile.creditoAgricola.formatInfo.popover.section().getByTestId('header'),
+            closeButton: () =>
+              this.locators.singleFile.creditoAgricola.formatInfo.popover.section().getByTestId('close-button'),
+            fileExtension: () =>
+              this.locators.singleFile.creditoAgricola.formatInfo.popover.section().getByTestId('file-extension-badge'),
+            htmlExample: () =>
+              this.locators.singleFile.creditoAgricola.formatInfo.popover.section().getByTestId('example-html'),
+          },
         },
       },
       cryptoCom: {
-        fileInput: () => {
-          return this.getLocatorSource().getByTestId('single-file-input-cryptoCom');
-        },
-        convertButton: () => {
-          return this.getLocatorSource().getByTestId('convert-button-cryptoCom');
-        },
-        successAlert: () => {
-          return this.getLocatorSource().getByTestId('conversion-success-cryptoCom');
-        },
-        errorAlert: () => {
-          return this.getLocatorSource().getByTestId('conversion-error-cryptoCom');
-        },
-        formatInfoButton: () => {
-          return this.getLocatorSource().getByTestId('single-file-format-info-button-cryptoCom');
-        },
-      },
-      formatInfoPopover: {
-        header: (bankId: BankId) => {
-          return this.getLocatorSource().getByTestId(`single-file-format-info-header-${bankId}`);
-        },
-        closeButton: () => {
-          return this.getLocatorSource().getByTestId('single-file-format-info-close-button');
-        },
-        badge: () => {
-          return this.getLocatorSource().getByTestId('single-file-format-info-badge');
-        },
-        htmlContent: () => {
-          return this.getLocatorSource().getByTestId('single-file-format-info-html');
+        section: () => this.locators.singleFile.section().getByTestId('bank-cryptoCom-card'),
+        fileInput: () => this.locators.singleFile.cryptoCom.section().getByTestId('file-input'),
+        convertButton: () => this.locators.singleFile.cryptoCom.section().getByTestId('convert-button'),
+        successAlert: () => this.locators.singleFile.cryptoCom.section().getByTestId('success-alert'),
+        errorAlert: () => this.locators.singleFile.cryptoCom.section().getByTestId('error-alert'),
+        formatInfo: {
+          button: () => this.locators.singleFile.cryptoCom.section().getByTestId('format-info-button'),
+          popover: {
+            section: () => this.getLocatorSource().getByTestId('format-info-popover'),
+            header: () => this.locators.singleFile.cryptoCom.formatInfo.popover.section().getByTestId('header'),
+            closeButton: () =>
+              this.locators.singleFile.cryptoCom.formatInfo.popover.section().getByTestId('close-button'),
+            fileExtension: () =>
+              this.locators.singleFile.cryptoCom.formatInfo.popover.section().getByTestId('file-extension-badge'),
+            htmlExample: () =>
+              this.locators.singleFile.cryptoCom.formatInfo.popover.section().getByTestId('example-html'),
+          },
         },
       },
     },
-    footer: () => {
-      return this.getLocatorSource().getByTestId('app-footer');
-    },
+    footer: () => this.getLocatorSource().getByTestId('footer'),
   };
 
   async goTo() {

@@ -11,24 +11,24 @@ test.describe('Page Load and Layout', () => {
     });
 
     await test.step('Verify the Convert Multiple Files card heading is visible', async () => {
-      await expect(budgetPage.locators.multiSection.sectionHeading()).toBeVisible();
+      await expect(budgetPage.locators.multiFile.header()).toBeVisible();
     });
 
     await test.step('Verify ActivoBank file area shows No file selected', async () => {
-      await expect(budgetPage.locators.multiSection.activoBankFileDisplay()).toContainText('No file selected');
+      await expect(budgetPage.locators.multiFile.activoBank.selectedFile()).toContainText('No file selected');
     });
 
     await test.step('Verify Crédito Agrícola file area shows No file selected', async () => {
-      await expect(budgetPage.locators.multiSection.creditoAgricolaFileDisplay()).toContainText('No file selected');
+      await expect(budgetPage.locators.multiFile.creditoAgricola.selectedFile()).toContainText('No file selected');
     });
 
     await test.step('Verify Crypto.com file area shows No file selected', async () => {
-      await expect(budgetPage.locators.multiSection.cryptoComFileDisplay()).toContainText('No file selected');
+      await expect(budgetPage.locators.multiFile.cryptoCom.selectedFile()).toContainText('No file selected');
     });
 
     await test.step('Verify the Convert All button is visible and disabled', async () => {
-      await expect(budgetPage.locators.multiSection.convertAllButton()).toBeVisible();
-      await expect(budgetPage.locators.multiSection.convertAllButton()).toBeDisabled();
+      await expect(budgetPage.locators.multiFile.convertAllButton()).toBeVisible();
+      await expect(budgetPage.locators.multiFile.convertAllButton()).toBeDisabled();
     });
   });
 });

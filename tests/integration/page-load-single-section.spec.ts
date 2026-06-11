@@ -11,22 +11,22 @@ test.describe('Page Load and Layout', () => {
     });
 
     await test.step('Verify the Single File Conversion section heading is visible', async () => {
-      await expect(budgetPage.locators.singleSection.sectionHeading()).toBeVisible();
+      await expect(budgetPage.locators.singleFile.header()).toBeVisible();
     });
 
     await test.step('Verify the ActivoBank card is visible with Convert button disabled', async () => {
-      await expect(budgetPage.locators.singleSection.activoBank.fileInput()).toContainText('Click to select file');
-      await expect(budgetPage.locators.singleSection.activoBank.convertButton()).toBeDisabled();
+      await expect(budgetPage.locators.singleFile.activoBank.fileInput()).toContainText('Click to select file');
+      await expect(budgetPage.locators.singleFile.activoBank.convertButton()).toBeDisabled();
     });
 
     await test.step('Verify the Crédito Agrícola card is visible with Convert button disabled', async () => {
-      await expect(budgetPage.locators.singleSection.creditoAgricola.fileInput()).toContainText('Click to select file');
-      await expect(budgetPage.locators.singleSection.creditoAgricola.convertButton()).toBeDisabled();
+      await expect(budgetPage.locators.singleFile.creditoAgricola.fileInput()).toContainText('Click to select file');
+      await expect(budgetPage.locators.singleFile.creditoAgricola.convertButton()).toBeDisabled();
     });
 
     await test.step('Verify the Crypto.com card is visible with Convert button disabled', async () => {
-      await expect(budgetPage.locators.singleSection.cryptoCom.fileInput()).toContainText('Click to select file');
-      await expect(budgetPage.locators.singleSection.cryptoCom.convertButton()).toBeDisabled();
+      await expect(budgetPage.locators.singleFile.cryptoCom.fileInput()).toContainText('Click to select file');
+      await expect(budgetPage.locators.singleFile.cryptoCom.convertButton()).toBeDisabled();
     });
   });
 });

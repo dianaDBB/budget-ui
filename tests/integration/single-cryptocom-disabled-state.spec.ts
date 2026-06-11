@@ -11,7 +11,7 @@ test.describe('Single File Conversion - Crypto.com', () => {
     });
 
     await test.step('Verify the Convert button inside the Crypto.com card is disabled', async () => {
-      await expect(budgetPage.locators.singleSection.cryptoCom.convertButton()).toBeDisabled();
+      await expect(budgetPage.locators.singleFile.cryptoCom.convertButton()).toBeDisabled();
     });
   });
 });

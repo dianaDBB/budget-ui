@@ -13,20 +13,20 @@ test.describe('Multiple File Conversion', () => {
 
     await test.step('Upload a file to the ActivoBank input in the Multiple File Conversion card', async () => {
       const filePath = path.join(process.cwd(), `/tests/resources/ActivoBank-Invalid.xlsx`);
-      await budgetPage.locators.multiSection.activoBankFileInput().setInputFiles(filePath);
+      await budgetPage.locators.multiFile.activoBank.fileInput().setInputFiles(filePath);
     });
 
     await test.step('Verify the ActivoBank file area shows the selected file name', async () => {
-      await expect(budgetPage.locators.multiSection.activoBankFileDisplay()).toContainText('ActivoBank-Invalid.xlsx');
+      await expect(budgetPage.locators.multiFile.activoBank.selectedFile()).toContainText('ActivoBank-Invalid.xlsx');
     });
 
     await test.step('Verify Crédito Agrícola and Crypto.com areas still show No file selected', async () => {
-      await expect(budgetPage.locators.multiSection.creditoAgricolaFileDisplay()).toContainText('No file selected');
-      await expect(budgetPage.locators.multiSection.cryptoComFileDisplay()).toContainText('No file selected');
+      await expect(budgetPage.locators.multiFile.creditoAgricola.selectedFile()).toContainText('No file selected');
+      await expect(budgetPage.locators.multiFile.cryptoCom.selectedFile()).toContainText('No file selected');
     });
 
     await test.step('Verify the Convert All button is now enabled', async () => {
-      await expect(budgetPage.locators.multiSection.convertAllButton()).toBeEnabled();
+      await expect(budgetPage.locators.multiFile.convertAllButton()).toBeEnabled();
     });
   });
 });

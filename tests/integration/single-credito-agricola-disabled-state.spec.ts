@@ -11,7 +11,7 @@ test.describe('Single File Conversion - Crédito Agrícola', () => {
     });
 
     await test.step('Verify the Convert button inside the Crédito Agrícola card is disabled', async () => {
-      await expect(budgetPage.locators.singleSection.creditoAgricola.convertButton()).toBeDisabled();
+      await expect(budgetPage.locators.singleFile.creditoAgricola.convertButton()).toBeDisabled();
     });
   });
 });

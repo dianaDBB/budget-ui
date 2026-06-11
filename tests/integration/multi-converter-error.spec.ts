@@ -16,25 +16,25 @@ test.describe('Multiple File Conversion', () => {
 
     await test.step('Upload a file to the ActivoBank input in the Multiple File Conversion card', async () => {
       const filePath = path.join(process.cwd(), `/tests/resources/ActivoBank-Invalid.xlsx`);
-      await budgetPage.locators.multiSection.activoBankFileInput().setInputFiles(filePath);
+      await budgetPage.locators.multiFile.activoBank.fileInput().setInputFiles(filePath);
     });
 
     await test.step('Upload a file to the Crédito Agrícola input', async () => {
       const filePath = path.join(process.cwd(), `/tests/resources/CreditoAgricola-Invalid.xlsx`);
-      await budgetPage.locators.multiSection.creditoAgricolaFileInput().setInputFiles(filePath);
+      await budgetPage.locators.multiFile.creditoAgricola.fileInput().setInputFiles(filePath);
     });
 
     await test.step('Upload a file to the Crypto.com input', async () => {
       const filePath = path.join(process.cwd(), `/tests/resources/CryptoCom-Invalid.csv`);
-      await budgetPage.locators.multiSection.cryptoComFileInput().setInputFiles(filePath);
+      await budgetPage.locators.multiFile.cryptoCom.fileInput().setInputFiles(filePath);
     });
 
     await test.step('Click the Convert All button', async () => {
-      await budgetPage.locators.multiSection.convertAllButton().click();
+      await budgetPage.locators.multiFile.convertAllButton().click();
     });
 
     await test.step('Verify an error alert is shown inside the Multiple File Conversion card', async () => {
-      await expect(budgetPage.locators.multiSection.errorAlert()).toBeVisible();
+      await expect(budgetPage.locators.multiFile.errorAlert()).toBeVisible();
     });
   });
 });

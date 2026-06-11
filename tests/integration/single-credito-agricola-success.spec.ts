@@ -16,30 +16,30 @@ test.describe('Single File Conversion - Crédito Agrícola', () => {
 
     await test.step('Upload a valid Crédito Agrícola CSV file to the Crédito Agrícola file input', async () => {
       const filePath = path.join(process.cwd(), `/tests/resources/CreditoAgricola.xlsx`);
-      await budgetPage.locators.singleSection.creditoAgricola.fileInput().setInputFiles(filePath);
-      await expect(budgetPage.locators.singleSection.creditoAgricola.fileInput()).not.toContainText(
+      await budgetPage.locators.singleFile.creditoAgricola.fileInput().setInputFiles(filePath);
+      await expect(budgetPage.locators.singleFile.creditoAgricola.fileInput()).not.toContainText(
         'Click to select file',
       );
     });
 
     await test.step('Click the Convert button and verify a file download is triggered', async () => {
       const downloadPromise = budgetPage.page.waitForEvent('download');
-      await budgetPage.locators.singleSection.creditoAgricola.convertButton().click();
+      await budgetPage.locators.singleFile.creditoAgricola.convertButton().click();
       await downloadPromise;
     });
 
     await test.step('Verify the success alert appears with the correct message', async () => {
-      await expect(budgetPage.locators.singleSection.creditoAgricola.successAlert()).toContainText(
+      await expect(budgetPage.locators.singleFile.creditoAgricola.successAlert()).toContainText(
         'File converted successfully',
       );
     });
 
     await test.step('Verify the file label resets to Click to select file', async () => {
-      await expect(budgetPage.locators.singleSection.creditoAgricola.fileInput()).toContainText('Click to select file');
+      await expect(budgetPage.locators.singleFile.creditoAgricola.fileInput()).toContainText('Click to select file');
     });
 
     await test.step('Verify the Convert button becomes disabled again', async () => {
-      await expect(budgetPage.locators.singleSection.creditoAgricola.convertButton()).toBeDisabled();
+      await expect(budgetPage.locators.singleFile.creditoAgricola.convertButton()).toBeDisabled();
     });
   });
 });

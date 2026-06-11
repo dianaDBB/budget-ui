@@ -1,33 +1,22 @@
 import { BankId } from '@data-models/bank-id';
 import { test, expect } from '@fixtures';
 
-test.describe('Format Info — Multiple File Conversion', () => {
-  test.beforeEach(async ({ mockSetup, budgetMock }) => {
+test.describe('Scenario 7.3 - Multi format info popover close', () => {
+  test('should close the multi format info popover when the close button is clicked', async ({
+    mockSetup,
+    budgetMock,
+    budgetPage,
+  }) => {
     await mockSetup.setMockMode();
     await budgetMock.mockGetBankFormat({ bankId: BankId.activoBank });
     await budgetMock.mockGetBankFormat({ bankId: BankId.creditoAgricola });
     await budgetMock.mockGetBankFormat({ bankId: BankId.cryptoCom });
-  });
+    await budgetPage.goTo();
 
-  test('should close the format popover when clicking the close button', async ({ budgetPage }) => {
-    await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
-    });
+    await budgetPage.locators.multiFile.formatInfo.button().click();
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.header()).toBeVisible();
 
-    await test.step('Click the info icon button on the Multiple File Conversion card', async () => {
-      await budgetPage.locators.multiSection.formatInfoButton().click();
-    });
-
-    await test.step('Verify the format popover is visible', async () => {
-      await expect(budgetPage.locators.multiSection.formatInfoPopover.header()).toBeVisible();
-    });
-
-    await test.step('Click the close button inside the popover', async () => {
-      await budgetPage.locators.multiSection.formatInfoPopover.closeButton().click();
-    });
-
-    await test.step('Verify the format popover is no longer visible', async () => {
-      await expect(budgetPage.locators.multiSection.formatInfoPopover.header()).not.toBeVisible();
-    });
+    await budgetPage.locators.multiFile.formatInfo.popover.closeButton().click();
+    await expect(budgetPage.locators.multiFile.formatInfo.popover.header()).not.toBeVisible();
   });
 });

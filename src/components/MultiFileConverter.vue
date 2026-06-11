@@ -1,71 +1,47 @@
 <template>
-  <div class="multi-converter-card">
+  <div class="multi-converter-card" data-testid="multi-file-card">
     <div class="card-header">
       <div class="icon">
         <img :src="'/logo.png'" width="50" height="50" />
       </div>
       <div class="header-text">
-        <h3 data-testid="multi-section-heading">Convert Multiple Files</h3>
-        <p data-testid="multi-section-description">Upload files from multiple banks and convert them together</p>
+        <h3 data-testid="header">Convert Multiple Files</h3>
+        <p data-testid="header-description">Upload files from multiple banks and convert them together</p>
       </div>
-      <button
-        class="info-btn"
-        aria-label="Format info for all banks"
-        data-testid="multi-section-format-info-button"
-        @click.stop="toggleFormatInfo"
-      >
-        ⓘ
-      </button>
+      <button class="info-btn" data-testid="format-info-button" @click.stop="toggleFormatInfo">ⓘ</button>
     </div>
 
-    <div v-if="showFormatInfo" class="format-popover" @click.self="showFormatInfo = false">
-      <div class="format-popover-content">
-        <div class="format-popover-header">
-          <span data-testid="multi-section-format-info-header">File examples</span>
-          <button
-            class="close-btn"
-            data-testid="multi-section-format-info-close-button"
-            @click="showFormatInfo = false"
-          >
-            ✕
-          </button>
+    <FormatInfoPopover
+      v-if="showFormatInfo"
+      :loading="formatsLoading"
+      :error="formatsError"
+      max-width="760px"
+      @close="showFormatInfo = false"
+    >
+      <template #title>
+        <span data-testid="header">Example of input files</span>
+      </template>
+      <div v-for="bank in banks" :key="bank.id" class="bank-format-section" :data-testid="`bank-${bank.id}-section`">
+        <div class="bank-format-title">
+          <span v-if="bank.logo" class="bank-logo-sm"><img :src="bank.logo" :alt="bank.name" /></span>
+          <strong>{{ bank.name }}</strong>
+          <span v-if="formatsData[bank.id]?.fileFormat" class="format-badge" data-testid="file-extension-badge">{{
+            formatsData[bank.id]?.fileFormat
+          }}</span>
         </div>
-        <div class="format-popover-body">
-          <div v-if="formatsLoading" class="format-loading">Loading…</div>
-          <div v-else-if="formatsError" class="format-error">{{ formatsError }}</div>
-          <template v-else>
-            <div
-              v-for="bank in banks"
-              :key="bank.id"
-              class="bank-format-section"
-              :data-testid="`multi-section-bank-format-section-${bank.id}`"
-            >
-              <div class="bank-format-title">
-                <span v-if="bank.logo" class="bank-logo-sm"><img :src="bank.logo" :alt="bank.name" /></span>
-                <strong>{{ bank.name }}</strong>
-                <span
-                  v-if="formatsData[bank.id]?.fileFormat"
-                  class="format-badge"
-                  :data-testid="`multi-section-bank-format-badge-${bank.id}`"
-                  >{{ formatsData[bank.id]?.fileFormat }}</span
-                >
-              </div>
-              <!-- eslint-disable-next-line vue/no-v-html -->
-              <div
-                v-if="formatsData[bank.id]?.html"
-                class="format-html"
-                :data-testid="`multi-section-bank-format-html-${bank.id}`"
-                v-html="formatsData[bank.id]?.html"
-              />
-            </div>
-          </template>
-        </div>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div
+          v-if="formatsData[bank.id]?.html"
+          class="format-html"
+          data-testid="example-html"
+          v-html="formatsData[bank.id]?.html"
+        />
       </div>
-    </div>
+    </FormatInfoPopover>
 
     <div class="card-body">
       <div class="files-grid">
-        <div v-for="bank in banks" :key="bank.id" class="file-input-group">
+        <div v-for="bank in banks" :key="bank.id" class="file-input-group" :data-testid="`bank-${bank.id}-card`">
           <label :for="`file-${bank.id}`" class="bank-label">
             <span v-if="bank.logo" class="bank-logo">
               <img :src="bank.logo" :alt="bank.name" />
@@ -77,10 +53,10 @@
             :id="`file-${bank.id}`"
             type="file"
             class="file-input"
-            :data-testid="`multiple-file-input-${bank.id}`"
+            data-testid="file-input"
             @change="(e) => handleFileSelect(e, bank.id)"
           />
-          <div class="file-display" :data-testid="`multiple-file-display-${bank.id}`">
+          <div class="file-display" data-testid="selected-file-label">
             <span v-if="selectedFiles[bank.id]" class="file-name"> ✓ {{ selectedFiles[bank.id]?.name }} </span>
             <span v-else class="placeholder">No file selected</span>
           </div>
@@ -97,12 +73,12 @@
         <span v-else>Convert All</span>
       </button>
 
-      <div v-if="status.isError" class="alert alert-error" data-testid="multi-section-error">
+      <div v-if="status.isError" class="alert alert-error" data-testid="error-alert">
         <span class="alert-icon">⚠️</span>
         {{ status.message }}
       </div>
 
-      <div v-if="status.isSuccess" class="alert alert-success" data-testid="multi-section-success">
+      <div v-if="status.isSuccess" class="alert alert-success" data-testid="success-alert">
         <span class="alert-icon">✓</span>
         {{ status.message }}
       </div>
@@ -112,6 +88,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import FormatInfoPopover from './FormatInfoPopover.vue';
 import type { BankOption, ConversionStatus } from '@/types';
 import api from '@/services/api';
 import { downloadFile } from '@/utils/fileDownload';
@@ -289,113 +266,44 @@ async function handleConvertAll(): Promise<void> {
   }
 }
 
-.format-popover {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 100;
+.bank-format-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bank-format-title {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 6px;
 
-  .format-popover-content {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    max-width: 760px;
-    width: 90%;
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  .bank-logo-sm img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    vertical-align: middle;
   }
 
-  .format-popover-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 18px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    flex-shrink: 0;
-
-    .close-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      line-height: 1;
-      padding: 0 4px;
-      opacity: 0.8;
-
-      &:hover {
-        opacity: 1;
-      }
-    }
+  .format-badge {
+    display: inline-block;
+    padding: 1px 7px;
+    background: #ede9fe;
+    border: 1px solid #c4b5fd;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #6d28d9;
+    text-transform: uppercase;
   }
+}
 
-  .format-popover-body {
-    padding: 16px;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .format-loading,
-  .format-error {
-    font-size: 13px;
-    color: #666;
-    text-align: center;
-    padding: 20px;
-  }
-
-  .format-error {
-    color: #c33;
-  }
-
-  .bank-format-section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .bank-format-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 6px;
-
-    .bank-logo-sm img {
-      width: 20px;
-      height: 20px;
-      object-fit: contain;
-      vertical-align: middle;
-    }
-
-    .format-badge {
-      display: inline-block;
-      padding: 1px 7px;
-      background: #ede9fe;
-      border: 1px solid #c4b5fd;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: #6d28d9;
-      text-transform: uppercase;
-    }
-  }
-
-  .format-html {
-    font-size: 12px;
-    overflow-x: auto;
-  }
+.format-html {
+  font-size: 12px;
+  overflow-x: auto;
 }
 
 .card-body {

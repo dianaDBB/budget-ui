@@ -16,15 +16,15 @@ test.describe('Single File Conversion - ActivoBank', () => {
 
     await test.step('Upload a plain text file to the ActivoBank file input', async () => {
       const filePath = path.join(process.cwd(), `/tests/resources/ActivoBank-Invalid.xlsx`);
-      await budgetPage.locators.singleSection.activoBank.fileInput().setInputFiles(filePath);
+      await budgetPage.locators.singleFile.activoBank.fileInput().setInputFiles(filePath);
     });
 
     await test.step('Click the Convert button in the ActivoBank card', async () => {
-      await budgetPage.locators.singleSection.activoBank.convertButton().click();
+      await budgetPage.locators.singleFile.activoBank.convertButton().click();
     });
 
     await test.step('Verify an error alert is shown inside the ActivoBank card', async () => {
-      await expect(budgetPage.locators.singleSection.activoBank.errorAlert()).toBeVisible();
+      await expect(budgetPage.locators.singleFile.activoBank.errorAlert()).toBeVisible();
     });
   });
 });

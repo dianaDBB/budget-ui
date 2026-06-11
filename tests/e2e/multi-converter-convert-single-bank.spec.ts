@@ -9,16 +9,16 @@ test.describe('Multiple File Conversion', () => {
 
     await test.step('Upload a valid ActivoBank file to the ActivoBank input only', async () => {
       const filePath = path.join(process.cwd(), '/tests/resources/ActivoBank.xlsx');
-      await budgetPage.locators.multiSection.activoBankFileInput().setInputFiles(filePath);
-      await expect(budgetPage.locators.multiSection.activoBankFileDisplay()).not.toContainText('No file selected');
+      await budgetPage.locators.multiFile.activoBank.fileInput().setInputFiles(filePath);
+      await expect(budgetPage.locators.multiFile.activoBank.selectedFile()).not.toContainText('No file selected');
     });
 
     await test.step('Click the Convert All button', async () => {
-      await budgetPage.locators.multiSection.convertAllButton().click();
+      await budgetPage.locators.multiFile.convertAllButton().click();
     });
 
     await test.step('Verify an error alert is shown because not all files were provided', async () => {
-      await expect(budgetPage.locators.multiSection.errorAlert()).toBeVisible();
+      await expect(budgetPage.locators.multiFile.errorAlert()).toBeVisible();
     });
   });
 
@@ -29,16 +29,16 @@ test.describe('Multiple File Conversion', () => {
 
     await test.step('Upload a valid Crédito Agrícola file to the Crédito Agrícola input only', async () => {
       const filePath = path.join(process.cwd(), '/tests/resources/CreditoAgricola.xlsx');
-      await budgetPage.locators.multiSection.creditoAgricolaFileInput().setInputFiles(filePath);
-      await expect(budgetPage.locators.multiSection.creditoAgricolaFileDisplay()).not.toContainText('No file selected');
+      await budgetPage.locators.multiFile.creditoAgricola.fileInput().setInputFiles(filePath);
+      await expect(budgetPage.locators.multiFile.creditoAgricola.selectedFile()).not.toContainText('No file selected');
     });
 
     await test.step('Click the Convert All button', async () => {
-      await budgetPage.locators.multiSection.convertAllButton().click();
+      await budgetPage.locators.multiFile.convertAllButton().click();
     });
 
     await test.step('Verify an error alert is shown because not all files were provided', async () => {
-      await expect(budgetPage.locators.multiSection.errorAlert()).toBeVisible();
+      await expect(budgetPage.locators.multiFile.errorAlert()).toBeVisible();
     });
   });
 
@@ -49,16 +49,16 @@ test.describe('Multiple File Conversion', () => {
 
     await test.step('Upload a valid Crypto.com file to the Crypto.com input only', async () => {
       const filePath = path.join(process.cwd(), '/tests/resources/CryptoCom.csv');
-      await budgetPage.locators.multiSection.cryptoComFileInput().setInputFiles(filePath);
-      await expect(budgetPage.locators.multiSection.cryptoComFileDisplay()).not.toContainText('No file selected');
+      await budgetPage.locators.multiFile.cryptoCom.fileInput().setInputFiles(filePath);
+      await expect(budgetPage.locators.multiFile.cryptoCom.selectedFile()).not.toContainText('No file selected');
     });
 
     await test.step('Click the Convert All button', async () => {
-      await budgetPage.locators.multiSection.convertAllButton().click();
+      await budgetPage.locators.multiFile.convertAllButton().click();
     });
 
     await test.step('Verify an error alert is shown because not all files were provided', async () => {
-      await expect(budgetPage.locators.multiSection.errorAlert()).toBeVisible();
+      await expect(budgetPage.locators.multiFile.errorAlert()).toBeVisible();
     });
   });
 });

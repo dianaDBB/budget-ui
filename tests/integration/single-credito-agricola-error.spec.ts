@@ -16,15 +16,15 @@ test.describe('Single File Conversion - Crédito Agrícola', () => {
 
     await test.step('Upload a plain text file to the Crédito Agrícola file input', async () => {
       const filePath = path.join(process.cwd(), `/tests/resources/CreditoAgricola-Invalid.xlsx`);
-      await budgetPage.locators.singleSection.creditoAgricola.fileInput().setInputFiles(filePath);
+      await budgetPage.locators.singleFile.creditoAgricola.fileInput().setInputFiles(filePath);
     });
 
     await test.step('Click the Convert button in the Crédito Agrícola card', async () => {
-      await budgetPage.locators.singleSection.creditoAgricola.convertButton().click();
+      await budgetPage.locators.singleFile.creditoAgricola.convertButton().click();
     });
 
     await test.step('Verify an error alert is shown inside the Crédito Agrícola card', async () => {
-      await expect(budgetPage.locators.singleSection.creditoAgricola.errorAlert()).toBeVisible();
+      await expect(budgetPage.locators.singleFile.creditoAgricola.errorAlert()).toBeVisible();
     });
   });
 });

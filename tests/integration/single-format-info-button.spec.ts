@@ -1,25 +1,12 @@
 import { test, expect } from '@fixtures';
 
-test.describe('Format Info — Single File Conversion', () => {
-  test.beforeEach(async ({ mockSetup }) => {
+test.describe('Scenario 6.1 - Single format info buttons visible', () => {
+  test('should show a format info button for each single bank card', async ({ mockSetup, budgetPage }) => {
     await mockSetup.setMockMode();
-  });
+    await budgetPage.goTo();
 
-  test('should display the info icon button on each bank card', async ({ budgetPage }) => {
-    await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
-    });
-
-    await test.step('Verify the info icon button is visible on the ActivoBank card', async () => {
-      await expect(budgetPage.locators.singleSection.activoBank.formatInfoButton()).toBeVisible();
-    });
-
-    await test.step('Verify the info icon button is visible on the Crédito Agrícola card', async () => {
-      await expect(budgetPage.locators.singleSection.creditoAgricola.formatInfoButton()).toBeVisible();
-    });
-
-    await test.step('Verify the info icon button is visible on the Crypto.com card', async () => {
-      await expect(budgetPage.locators.singleSection.cryptoCom.formatInfoButton()).toBeVisible();
-    });
+    await expect(budgetPage.locators.singleFile.activoBank.formatInfo.button()).toBeVisible();
+    await expect(budgetPage.locators.singleFile.creditoAgricola.formatInfo.button()).toBeVisible();
+    await expect(budgetPage.locators.singleFile.cryptoCom.formatInfo.button()).toBeVisible();
   });
 });
