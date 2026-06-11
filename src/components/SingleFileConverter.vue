@@ -9,6 +9,32 @@
         <h3>{{ bankOption.name }}</h3>
         <p>{{ bankOption.description }}</p>
       </div>
+      <button
+        class="info-btn"
+        data-testid="format-info-button"
+        :aria-label="`Format info for ${bankOption.name}`"
+        @click.stop="toggleFormatInfo"
+      >
+        ⓘ
+      </button>
+    </div>
+
+    <div v-if="showFormatInfo" class="format-popover" @click.self="showFormatInfo = false">
+      <div class="format-popover-content">
+        <div class="format-popover-header">
+          <span>
+            {{ bankOption.name }} — File example
+            <span v-if="formatFileFormat" class="format-badge">{{ formatFileFormat }}</span>
+          </span>
+          <button class="close-btn" @click="showFormatInfo = false">✕</button>
+        </div>
+        <div class="format-popover-body">
+          <div v-if="formatLoading" class="format-loading">Loading…</div>
+          <div v-else-if="formatError" class="format-error">{{ formatError }}</div>
+          <!-- eslint-disable-next-line vue/no-v-html -->
+          <div v-else-if="formatHtml" class="format-html" v-html="formatHtml" />
+        </div>
+      </div>
     </div>
 
     <div class="card-body">
@@ -64,6 +90,29 @@ import { ref } from 'vue';
 import type { BankOption, ConversionStatus } from '@/types';
 import api from '@/services/api';
 import { downloadFile, generateFileName } from '@/utils/fileDownload';
+
+const showFormatInfo = ref(false);
+const formatHtml = ref<string | null>(null);
+const formatFileFormat = ref<string | null>(null);
+const formatLoading = ref(false);
+const formatError = ref<string | null>(null);
+
+async function toggleFormatInfo(): Promise<void> {
+  showFormatInfo.value = !showFormatInfo.value;
+  if (showFormatInfo.value && formatHtml.value === null && !formatLoading.value) {
+    formatLoading.value = true;
+    formatError.value = null;
+    try {
+      const data = await api.getBankFormat(props.bankOption.id);
+      formatHtml.value = data.htmlExample;
+      formatFileFormat.value = data.fileFormat;
+    } catch {
+      formatError.value = 'Could not load format info.';
+    } finally {
+      formatLoading.value = false;
+    }
+  }
+}
 
 interface Props {
   bankOption: BankOption;
@@ -178,6 +227,110 @@ async function handleConvert(): Promise<void> {
       font-size: 12px;
       opacity: 0.9;
     }
+  }
+
+  .info-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+  }
+}
+
+.format-popover {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .format-popover-content {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    max-width: 700px;
+    width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .format-popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+
+    .format-badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 8px;
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      vertical-align: middle;
+      text-transform: uppercase;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+      opacity: 0.8;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .format-popover-body {
+    padding: 16px;
+    overflow: auto;
+  }
+
+  .format-loading,
+  .format-error {
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .format-error {
+    color: #c33;
+  }
+
+  .format-html {
+    font-size: 12px;
+    overflow-x: auto;
   }
 }
 

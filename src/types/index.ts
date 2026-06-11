@@ -14,6 +14,12 @@ export interface BankOption {
   logo?: string;
 }
 
+export interface BankFormat {
+  bankName: string;
+  fileFormat: string;
+  htmlExample: string;
+}
+
 export interface ConversionStatus {
   isLoading: boolean;
   isSuccess: boolean;

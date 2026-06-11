@@ -1,3 +1,4 @@
+import { BankFormat } from '@/types';
 import axios, { AxiosInstance } from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
@@ -73,6 +74,13 @@ class BudgetApiService {
       responseType: 'blob',
     });
 
+    return response.data;
+  }
+
+  async getBankFormat(bankId: string): Promise<BankFormat> {
+    const response = await this.client.get(`/format/${bankId}`, {
+      headers: { Accept: 'application/json' },
+    });
     return response.data;
   }
 

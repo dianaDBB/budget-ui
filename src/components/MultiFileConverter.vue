@@ -8,6 +8,33 @@
         <h3 data-testid="multi-section-heading">Convert Multiple Files</h3>
         <p data-testid="multi-section-description">Upload files from multiple banks and convert them together</p>
       </div>
+      <button class="info-btn" aria-label="Format info for all banks" @click.stop="toggleFormatInfo">ⓘ</button>
+    </div>
+
+    <div v-if="showFormatInfo" class="format-popover" @click.self="showFormatInfo = false">
+      <div class="format-popover-content">
+        <div class="format-popover-header">
+          <span>File examples</span>
+          <button class="close-btn" @click="showFormatInfo = false">✕</button>
+        </div>
+        <div class="format-popover-body">
+          <div v-if="formatsLoading" class="format-loading">Loading…</div>
+          <div v-else-if="formatsError" class="format-error">{{ formatsError }}</div>
+          <template v-else>
+            <div v-for="bank in banks" :key="bank.id" class="bank-format-section">
+              <div class="bank-format-title">
+                <span v-if="bank.logo" class="bank-logo-sm"><img :src="bank.logo" :alt="bank.name" /></span>
+                <strong>{{ bank.name }}</strong>
+                <span v-if="formatsData[bank.id]?.fileFormat" class="format-badge">{{
+                  formatsData[bank.id]?.fileFormat
+                }}</span>
+              </div>
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <div v-if="formatsData[bank.id]?.html" class="format-html" v-html="formatsData[bank.id]?.html" />
+            </div>
+          </template>
+        </div>
+      </div>
     </div>
 
     <div class="card-body">
@@ -62,6 +89,29 @@ import { ref, computed } from 'vue';
 import type { BankOption, ConversionStatus } from '@/types';
 import api from '@/services/api';
 import { downloadFile } from '@/utils/fileDownload';
+
+const showFormatInfo = ref(false);
+const formatsLoading = ref(false);
+const formatsError = ref<string | null>(null);
+const formatsData = ref<Record<string, { html: string; fileFormat: string }>>({});
+
+async function toggleFormatInfo(): Promise<void> {
+  showFormatInfo.value = !showFormatInfo.value;
+  if (showFormatInfo.value && Object.keys(formatsData.value).length === 0 && !formatsLoading.value) {
+    formatsLoading.value = true;
+    formatsError.value = null;
+    try {
+      const results = await Promise.all(banks.map((b) => api.getBankFormat(b.id)));
+      banks.forEach((b, i) => {
+        formatsData.value[b.id] = { html: results[i].htmlExample, fileFormat: results[i].fileFormat };
+      });
+    } catch {
+      formatsError.value = 'Could not load format info.';
+    } finally {
+      formatsLoading.value = false;
+    }
+  }
+}
 
 const banks: BankOption[] = [
   {
@@ -190,6 +240,135 @@ async function handleConvertAll(): Promise<void> {
       font-size: 12px;
       opacity: 0.9;
     }
+  }
+
+  .info-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+  }
+}
+
+.format-popover {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .format-popover-content {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    max-width: 760px;
+    width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .format-popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+      opacity: 0.8;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .format-popover-body {
+    padding: 16px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .format-loading,
+  .format-error {
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .format-error {
+    color: #c33;
+  }
+
+  .bank-format-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bank-format-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 6px;
+
+    .bank-logo-sm img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      vertical-align: middle;
+    }
+
+    .format-badge {
+      display: inline-block;
+      padding: 1px 7px;
+      background: #ede9fe;
+      border: 1px solid #c4b5fd;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #6d28d9;
+      text-transform: uppercase;
+    }
+  }
+
+  .format-html {
+    font-size: 12px;
+    overflow-x: auto;
   }
 }
 
