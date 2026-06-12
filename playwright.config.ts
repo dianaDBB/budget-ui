@@ -9,8 +9,8 @@ dotenv.config({
 export default defineConfig({
   globalTimeout: 60 * 60 * 1000, // 60min timeout for all tests
   timeout: 5 * 60 * 1000, // 5min timeout per test case
-  retries: process.env.ENV == 'PROD' ? 1 : 0,
-  workers: process.env.ENV == 'PROD' ? 3 : 8,
+  retries: Number(process.env.PLAYWRIGHT_RETRIES!),
+  workers: Number(process.env.PLAYWRIGHT_WORKERS!),
   reporter: [
     ['list'],
     [
@@ -46,6 +46,14 @@ export default defineConfig({
   },
   projects: [
     {
+      name: 'setup',
+      testMatch: '**/tests/setup/**/*.spec.ts',
+      outputDir: 'tests/output/setup',
+      use: {
+        actionTimeout: 180000, // setup is used to wake API, so it is slow, increase default action timeout to 3min
+      },
+    },
+    {
       name: 'integration',
       testMatch: '**/tests/integration/**/*.spec.ts',
       outputDir: 'tests/output/integration',
@@ -74,6 +82,7 @@ export default defineConfig({
       expect: {
         timeout: 10000, // e2e are slow, increase default expect timeout to 10sec
       },
+      dependencies: ['setup'],
     },
   ],
 });
