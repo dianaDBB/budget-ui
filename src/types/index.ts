@@ -18,6 +18,13 @@ export interface BankFormat {
   bankName: string;
   fileFormat: string;
   htmlExample: string;
+  firstDataLine?: number;
+  dateColumnPosition?: number;
+  amountColumnPosition?: number;
+  descriptionColumnPosition?: number;
+  creditDebitColumnPosition?: number;
+  dateFormat?: string;
+  delimiter?: string;
 }
 
 export interface ConversionStatus {
@@ -26,4 +33,14 @@ export interface ConversionStatus {
   isError: boolean;
   message?: string;
   fileName?: string;
+}
+
+export interface BankConfigRequest {
+  firstLine?: number;
+  delimiter?: string;
+  dateFormat?: string;
+  amountColumnPosition?: number;
+  dateColumnPosition?: number;
+  descriptionColumnPosition?: number;
+  cdColumnPosition?: number;
 }

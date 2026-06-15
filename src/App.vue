@@ -30,6 +30,12 @@
             <SingleFileConverter v-for="bank in singleBanks" :key="bank.id" :bank="bank" />
           </div>
         </section>
+
+        <!-- Admin -->
+        <section class="converters-section" data-testid="admin-section">
+          <h2 class="section-title" data-testid="admin-header">Admin</h2>
+          <AdminPanel />
+        </section>
       </div>
     </main>
 
@@ -42,6 +48,7 @@
 <script setup lang="ts">
 import SingleFileConverter from '@/components/SingleFileConverter.vue';
 import MultiFileConverter from '@/components/MultiFileConverter.vue';
+import AdminPanel from '@/components/AdminPanel.vue';
 import type { BankOption } from '@/types';
 
 const singleBanks: BankOption[] = [
