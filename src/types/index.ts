@@ -44,3 +44,9 @@ export interface BankConfigRequest {
   descriptionColumnPosition?: number;
   cdColumnPosition?: number;
 }
+
+export interface CategoryRule {
+  keyword?: string;
+  category?: string;
+  subCategory?: string;
+}

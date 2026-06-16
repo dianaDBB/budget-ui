@@ -1,4 +1,4 @@
-import { BankFormat, BankConfigRequest } from '@/types';
+import { BankFormat, BankConfigRequest, CategoryRule } from '@/types';
 import axios, { AxiosInstance } from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
@@ -106,6 +106,19 @@ class BudgetApiService {
 
   async updateBankConfig(bankName: string, config: BankConfigRequest): Promise<void> {
     await this.client.put(`/config/${bankName}`, config, {
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    });
+  }
+
+  async getCategoryRules(): Promise<CategoryRule[]> {
+    const response = await this.client.get('/config/categories', {
+      headers: { Accept: 'application/json' },
+    });
+    return response.data;
+  }
+
+  async updateCategoryRules(rules: CategoryRule[]): Promise<void> {
+    await this.client.put('/config/categories', rules, {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     });
   }
