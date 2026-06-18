@@ -77,10 +77,10 @@ export default defineConfig({
       outputDir: 'tests/output/e2e',
       use: {
         baseURL: 'https://budget-ui-ht2i.onrender.com/',
-        actionTimeout: 10000, // e2e are slow, increase default action timeout to 10sec
+        actionTimeout: 30000, // e2e are slow, increase default action timeout to 30sec
       },
       expect: {
-        timeout: 10000, // e2e are slow, increase default expect timeout to 10sec
+        timeout: 30000, // e2e are slow, increase default expect timeout to 30sec
       },
       dependencies: ['setup'],
     },

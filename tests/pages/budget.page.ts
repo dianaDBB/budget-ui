@@ -22,17 +22,17 @@ export class BudgetPage extends BasePage {
       successAlert: () => this.locators.multiFile.section().getByTestId('success-alert'),
       errorAlert: () => this.locators.multiFile.section().getByTestId('error-alert'),
       activoBank: {
-        section: () => this.locators.multiFile.section().getByTestId('bank-activoBank-card'),
+        section: () => this.locators.multiFile.section().getByTestId('bank-ActivoBank-card'),
         fileInput: () => this.locators.multiFile.activoBank.section().getByTestId('file-input'),
         selectedFile: () => this.locators.multiFile.activoBank.section().getByTestId('selected-file-label'),
       },
       creditoAgricola: {
-        section: () => this.locators.multiFile.section().getByTestId('bank-creditoAgricola-card'),
+        section: () => this.locators.multiFile.section().getByTestId('bank-CreditoAgricola-card'),
         fileInput: () => this.locators.multiFile.creditoAgricola.section().getByTestId('file-input'),
         selectedFile: () => this.locators.multiFile.creditoAgricola.section().getByTestId('selected-file-label'),
       },
       cryptoCom: {
-        section: () => this.locators.multiFile.section().getByTestId('bank-cryptoCom-card'),
+        section: () => this.locators.multiFile.section().getByTestId('bank-CryptoCom-card'),
         fileInput: () => this.locators.multiFile.cryptoCom.section().getByTestId('file-input'),
         selectedFile: () => this.locators.multiFile.cryptoCom.section().getByTestId('selected-file-label'),
       },
@@ -63,7 +63,7 @@ export class BudgetPage extends BasePage {
       section: () => this.getLocatorSource().getByTestId('single-file-section'),
       header: () => this.locators.singleFile.section().getByTestId('main-header'),
       activoBank: {
-        section: () => this.locators.singleFile.section().getByTestId('bank-activoBank-card'),
+        section: () => this.locators.singleFile.section().getByTestId('bank-ActivoBank-card'),
         fileInput: () => this.locators.singleFile.activoBank.section().getByTestId('file-input'),
         convertButton: () => this.locators.singleFile.activoBank.section().getByTestId('convert-button'),
         successAlert: () => this.locators.singleFile.activoBank.section().getByTestId('success-alert'),
@@ -83,7 +83,7 @@ export class BudgetPage extends BasePage {
         },
       },
       creditoAgricola: {
-        section: () => this.locators.singleFile.section().getByTestId('bank-creditoAgricola-card'),
+        section: () => this.locators.singleFile.section().getByTestId('bank-CreditoAgricola-card'),
         fileInput: () => this.locators.singleFile.creditoAgricola.section().getByTestId('file-input'),
         convertButton: () => this.locators.singleFile.creditoAgricola.section().getByTestId('convert-button'),
         successAlert: () => this.locators.singleFile.creditoAgricola.section().getByTestId('success-alert'),
@@ -103,7 +103,7 @@ export class BudgetPage extends BasePage {
         },
       },
       cryptoCom: {
-        section: () => this.locators.singleFile.section().getByTestId('bank-cryptoCom-card'),
+        section: () => this.locators.singleFile.section().getByTestId('bank-CryptoCom-card'),
         fileInput: () => this.locators.singleFile.cryptoCom.section().getByTestId('file-input'),
         convertButton: () => this.locators.singleFile.cryptoCom.section().getByTestId('convert-button'),
         successAlert: () => this.locators.singleFile.cryptoCom.section().getByTestId('success-alert'),

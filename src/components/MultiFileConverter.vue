@@ -93,6 +93,8 @@ import type { BankOption, ConversionStatus } from '@/types';
 import api from '@/services/api';
 import { downloadFile } from '@/utils/fileDownload';
 
+const props = defineProps<{ banks: BankOption[] }>();
+
 const showFormatInfo = ref(false);
 const formatsLoading = ref(false);
 const formatsError = ref<string | null>(null);
@@ -104,8 +106,8 @@ async function toggleFormatInfo(): Promise<void> {
     formatsLoading.value = true;
     formatsError.value = null;
     try {
-      const results = await Promise.all(banks.map((b) => api.getBankFormat(b.id)));
-      banks.forEach((b, i) => {
+      const results = await Promise.all(props.banks.map((b) => api.getBankFormat(b.id)));
+      props.banks.forEach((b, i) => {
         formatsData.value[b.id] = { html: results[i].htmlExample, fileFormat: results[i].fileFormat };
       });
     } catch {
@@ -116,35 +118,7 @@ async function toggleFormatInfo(): Promise<void> {
   }
 }
 
-const banks: BankOption[] = [
-  {
-    id: 'ActivoBank',
-    name: 'ActivoBank',
-    endpoint: '/budget/file/ActivoBank',
-    description: 'ActivoBank CSV',
-    logo: '/AB.png',
-  },
-  {
-    id: 'CreditoAgricola',
-    name: 'Crédito Agrícola',
-    endpoint: '/budget/file/CreditoAgricola',
-    description: 'Crédito Agrícola CSV',
-    logo: '/CA.png',
-  },
-  {
-    id: 'CryptoCom',
-    name: 'Crypto.com',
-    endpoint: '/budget/file/CryptoCom',
-    description: 'Crypto.com CSV',
-    logo: '/CY.png',
-  },
-];
-
-const selectedFiles = ref<Record<string, File | null>>({
-  activoBank: null,
-  creditoAgricola: null,
-  cryptoCom: null,
-});
+const selectedFiles = ref<Record<string, File | null>>({});
 
 const status = ref<ConversionStatus>({
   isLoading: false,
@@ -188,11 +162,7 @@ async function handleConvertAll(): Promise<void> {
     status.value.message = `✓ All files converted successfully! Downloaded: ${fileName}`;
 
     // Reset files
-    selectedFiles.value = {
-      activoBank: null,
-      creditoAgricola: null,
-      cryptoCom: null,
-    };
+    selectedFiles.value = {};
 
     // Reset file inputs
     document.querySelectorAll('.file-input').forEach((input: Element) => {

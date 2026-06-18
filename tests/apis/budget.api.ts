@@ -17,8 +17,16 @@ export class BudgetApi extends BaseApi {
     return `${BudgetApi.baseUrl()}/budget/file/${bankId}`;
   }
 
+  static generateAllFilesUrl(): string {
+    return `${BudgetApi.baseUrl()}/budget/file/all`;
+  }
+
   static getBankFormatUrl(bankId: BankId): string {
     return `${BudgetApi.baseUrl()}/file-config/${bankId}`;
+  }
+
+  static getAllBankConfigsUrl(): string {
+    return `${BudgetApi.baseUrl()}/file-config/all`;
   }
 
   /** ************************************************** ACTIONS ************************************************** **/

@@ -17,25 +17,33 @@
           </p>
         </div>
 
-        <!-- Multiple File Conversion -->
-        <section class="converters-section" data-testid="multi-file-section">
-          <h2 class="section-title" data-testid="main-header">Multiple File Conversion</h2>
-          <MultiFileConverter />
-        </section>
+        <!-- Loading / error state for bank configurations -->
+        <div v-if="banksLoading" class="banks-status" data-testid="banks-loading">Loading banks…</div>
+        <div v-else-if="banksError" class="banks-status banks-status--error" data-testid="banks-error">
+          {{ banksError }}
+        </div>
 
-        <!-- Single File Conversion -->
-        <section class="converters-section" data-testid="single-file-section">
-          <h2 class="section-title" data-testid="main-header">Single File Conversion</h2>
-          <div class="converters-grid">
-            <SingleFileConverter v-for="bank in singleBanks" :key="bank.id" :bank="bank" />
-          </div>
-        </section>
+        <template v-else>
+          <!-- Multiple File Conversion -->
+          <section class="converters-section" data-testid="multi-file-section">
+            <h2 class="section-title" data-testid="main-header">Multiple File Conversion</h2>
+            <MultiFileConverter :banks="banks" />
+          </section>
 
-        <!-- Admin -->
-        <section class="converters-section" data-testid="admin-section">
-          <h2 class="section-title" data-testid="admin-header">Admin</h2>
-          <AdminPanel />
-        </section>
+          <!-- Single File Conversion -->
+          <section class="converters-section" data-testid="single-file-section">
+            <h2 class="section-title" data-testid="main-header">Single File Conversion</h2>
+            <div class="converters-grid">
+              <SingleFileConverter v-for="bank in banks" :key="bank.id" :bank="bank" />
+            </div>
+          </section>
+
+          <!-- Admin -->
+          <section class="converters-section" data-testid="admin-section">
+            <h2 class="section-title" data-testid="admin-header">Admin</h2>
+            <AdminPanel />
+          </section>
+        </template>
       </div>
     </main>
 
@@ -46,34 +54,48 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import SingleFileConverter from '@/components/SingleFileConverter.vue';
 import MultiFileConverter from '@/components/MultiFileConverter.vue';
 import AdminPanel from '@/components/AdminPanel.vue';
+import api from '@/services/api';
 import type { BankOption } from '@/types';
 
-const singleBanks: BankOption[] = [
-  {
-    id: 'ActivoBank',
-    name: 'ActivoBank',
-    endpoint: '/budget/file/ActivoBank',
-    description: 'Convert ActivoBank files',
-    logo: '/AB.png',
-  },
-  {
-    id: 'CreditoAgricola',
-    name: 'Crédito Agrícola',
-    endpoint: '/budget/file/CreditoAgricola',
-    description: 'Convert Crédito Agrícola files',
-    logo: '/CA.png',
-  },
-  {
-    id: 'CryptoCom',
-    name: 'Crypto.com',
-    endpoint: '/budget/file/CryptoCom',
-    description: 'Convert Crypto.com files',
-    logo: '/CY.png',
-  },
-];
+// Known banks get a dedicated logo; any other bank falls back to a generic icon.
+const BANK_LOGOS: Record<string, string> = {
+  ActivoBank: '/AB.png',
+  CreditoAgricola: '/CA.png',
+  CryptoCom: '/CY.png',
+};
+
+// Display names for known banks (API bankName → human-readable label)
+const BANK_DISPLAY_NAMES: Record<string, string> = {
+  ActivoBank: 'ActivoBank',
+  CreditoAgricola: 'Crédito Agrícola',
+  CryptoCom: 'Crypto.com',
+};
+
+const banks = ref<BankOption[]>([]);
+const banksLoading = ref(true);
+const banksError = ref<string | null>(null);
+
+onMounted(async () => {
+  try {
+    const configs = await api.getAllBankConfigs();
+    banks.value = configs.map((config) => ({
+      id: config.bankName,
+      name: BANK_DISPLAY_NAMES[config.bankName] ?? config.bankName,
+      endpoint: `/budget/file/${config.bankName}`,
+      description: `Convert ${config.bankName} ${config.fileFormat} files`,
+      logo: BANK_LOGOS[config.bankName],
+      icon: BANK_LOGOS[config.bankName] ? undefined : '🏦',
+    }));
+  } catch {
+    banksError.value = 'Could not load bank configurations.';
+  } finally {
+    banksLoading.value = false;
+  }
+});
 </script>
 
 <style scoped lang="scss">
@@ -138,6 +160,21 @@ const singleBanks: BankOption[] = [
     color: #6b7280;
     font-size: 15px;
     line-height: 1.6;
+  }
+}
+
+.banks-status {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  color: #6b7280;
+  font-size: 15px;
+
+  &--error {
+    color: #c33;
   }
 }
 

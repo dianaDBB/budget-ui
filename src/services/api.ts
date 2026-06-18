@@ -1,4 +1,4 @@
-import { BankFormat, BankConfigRequest, CategoryRule } from '@/types';
+import { BankFormat, BankConfig, BankConfigRequest, CategoryRule } from '@/types';
 import axios, { AxiosInstance } from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
@@ -57,6 +57,13 @@ class BudgetApiService {
 
   async getBankFormat(bankName: string): Promise<BankFormat> {
     const response = await this.client.get(`/file-config/${bankName}`, {
+      headers: { Accept: 'application/json' },
+    });
+    return response.data;
+  }
+
+  async getAllBankConfigs(): Promise<BankConfig[]> {
+    const response = await this.client.get('/file-config/all', {
       headers: { Accept: 'application/json' },
     });
     return response.data;

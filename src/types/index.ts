@@ -52,3 +52,17 @@ export interface CategoryRule {
   subCategory?: string;
   type?: string;
 }
+
+export interface BankConfig {
+  id: string;
+  bankName: string;
+  firstLine: number;
+  dateColumnPos: number;
+  amountColumnPos: number;
+  descColumnPos: number;
+  creditDebitColumnPos: number;
+  dateFormat: string;
+  delimiter: string;
+  fileFormat: string;
+  ignoreValues: string | null;
+}
