@@ -44,60 +44,34 @@ class BudgetApiService {
     );
   }
 
-  async convertCryptoComFile(file: File): Promise<Blob> {
+  async convertBankFile(bankName: string, file: File): Promise<Blob> {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await this.client.post('/file/cryptoCom', formData, {
+    const response = await this.client.post(`/budget/file/${bankName}`, formData, {
       responseType: 'blob',
     });
 
     return response.data;
   }
 
-  async convertCreditoAgricolaFile(file: File): Promise<Blob> {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await this.client.post('/file/creditoAgricola', formData, {
-      responseType: 'blob',
-    });
-
-    return response.data;
-  }
-
-  async convertActivoBankFile(file: File): Promise<Blob> {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await this.client.post('/file/activoBank', formData, {
-      responseType: 'blob',
-    });
-
-    return response.data;
-  }
-
-  async getBankFormat(bankId: string): Promise<BankFormat> {
-    const response = await this.client.get(`/format/${bankId}`, {
+  async getBankFormat(bankName: string): Promise<BankFormat> {
+    const response = await this.client.get(`/file-config/${bankName}`, {
       headers: { Accept: 'application/json' },
     });
     return response.data;
   }
 
-  async convertAllBankFiles(activoBankFile?: File, creditoAgricolaFile?: File, cryptoComFile?: File): Promise<Blob> {
+  async convertAllBankFiles(files: { bankName: string; file: File }[]): Promise<Blob> {
     const formData = new FormData();
+    const params = new URLSearchParams();
 
-    if (activoBankFile) {
-      formData.append('activoBankFile', activoBankFile);
-    }
-    if (creditoAgricolaFile) {
-      formData.append('creditoAgricolaFile', creditoAgricolaFile);
-    }
-    if (cryptoComFile) {
-      formData.append('cryptoComFile', cryptoComFile);
+    for (const { bankName, file } of files) {
+      formData.append('files', file);
+      params.append('bankNames', bankName);
     }
 
-    const response = await this.client.post('/file/all', formData, {
+    const response = await this.client.post(`/budget/file/all?${params.toString()}`, formData, {
       responseType: 'blob',
     });
 
@@ -105,20 +79,20 @@ class BudgetApiService {
   }
 
   async updateBankConfig(bankName: string, config: BankConfigRequest): Promise<void> {
-    await this.client.put(`/config/${bankName}`, config, {
+    await this.client.put(`/file-config/${bankName}`, config, {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     });
   }
 
   async getCategoryRules(): Promise<CategoryRule[]> {
-    const response = await this.client.get('/config/categories', {
+    const response = await this.client.get('/category-rule/', {
       headers: { Accept: 'application/json' },
     });
     return response.data;
   }
 
   async updateCategoryRules(rules: CategoryRule[]): Promise<void> {
-    await this.client.put('/config/categories', rules, {
+    await this.client.put('/category-rule/', rules, {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     });
   }

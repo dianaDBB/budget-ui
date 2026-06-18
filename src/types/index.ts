@@ -41,12 +41,14 @@ export interface BankConfigRequest {
   dateFormat?: string;
   amountColumnPosition?: number;
   dateColumnPosition?: number;
-  descriptionColumnPosition?: number;
+  descColumnPosition?: number;
   cdColumnPosition?: number;
 }
 
 export interface CategoryRule {
+  id?: string;
   keyword?: string;
   category?: string;
   subCategory?: string;
+  type?: string;
 }

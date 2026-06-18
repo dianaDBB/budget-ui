@@ -118,23 +118,23 @@ async function toggleFormatInfo(): Promise<void> {
 
 const banks: BankOption[] = [
   {
-    id: 'activoBank',
+    id: 'ActivoBank',
     name: 'ActivoBank',
-    endpoint: '/file/activoBank',
+    endpoint: '/budget/file/ActivoBank',
     description: 'ActivoBank CSV',
     logo: '/AB.png',
   },
   {
-    id: 'creditoAgricola',
+    id: 'CreditoAgricola',
     name: 'Crédito Agrícola',
-    endpoint: '/file/creditoAgricola',
+    endpoint: '/budget/file/CreditoAgricola',
     description: 'Crédito Agrícola CSV',
     logo: '/CA.png',
   },
   {
-    id: 'cryptoCom',
+    id: 'CryptoCom',
     name: 'Crypto.com',
-    endpoint: '/file/cryptoCom',
+    endpoint: '/budget/file/CryptoCom',
     description: 'Crypto.com CSV',
     logo: '/CY.png',
   },
@@ -174,11 +174,11 @@ async function handleConvertAll(): Promise<void> {
   status.value.isSuccess = false;
 
   try {
-    const blob = await api.convertAllBankFiles(
-      selectedFiles.value.activoBank || undefined,
-      selectedFiles.value.creditoAgricola || undefined,
-      selectedFiles.value.cryptoCom || undefined,
-    );
+    const files = Object.entries(selectedFiles.value)
+      .filter((entry): entry is [string, File] => entry[1] !== null)
+      .map(([bankName, file]) => ({ bankName, file }));
+
+    const blob = await api.convertAllBankFiles(files);
 
     const timestamp = new Date().toISOString().split('T')[0];
     const fileName = `all_banks_${timestamp}.xlsx`;

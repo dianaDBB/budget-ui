@@ -136,21 +136,7 @@ async function handleConvert(): Promise<void> {
   status.value.isSuccess = false;
 
   try {
-    let blob: Blob;
-
-    switch (props.bank.id) {
-      case 'cryptoCom':
-        blob = await api.convertCryptoComFile(selectedFile.value);
-        break;
-      case 'creditoAgricola':
-        blob = await api.convertCreditoAgricolaFile(selectedFile.value);
-        break;
-      case 'activoBank':
-        blob = await api.convertActivoBankFile(selectedFile.value);
-        break;
-      default:
-        throw new Error('Unknown bank option');
-    }
+    const blob = await api.convertBankFile(props.bank.id, selectedFile.value);
 
     const fileName = generateFileName(props.bank.name);
     downloadFile(blob, fileName);

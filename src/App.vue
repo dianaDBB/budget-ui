@@ -53,23 +53,23 @@ import type { BankOption } from '@/types';
 
 const singleBanks: BankOption[] = [
   {
-    id: 'activoBank',
+    id: 'ActivoBank',
     name: 'ActivoBank',
-    endpoint: '/file/activoBank',
+    endpoint: '/budget/file/ActivoBank',
     description: 'Convert ActivoBank files',
     logo: '/AB.png',
   },
   {
-    id: 'creditoAgricola',
+    id: 'CreditoAgricola',
     name: 'Crédito Agrícola',
-    endpoint: '/file/creditoAgricola',
+    endpoint: '/budget/file/CreditoAgricola',
     description: 'Convert Crédito Agrícola files',
     logo: '/CA.png',
   },
   {
-    id: 'cryptoCom',
+    id: 'CryptoCom',
     name: 'Crypto.com',
-    endpoint: '/file/cryptoCom',
+    endpoint: '/budget/file/CryptoCom',
     description: 'Convert Crypto.com files',
     logo: '/CY.png',
   },

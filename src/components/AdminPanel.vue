@@ -100,7 +100,7 @@
           <label :for="`${activeTab}-descriptionColumnPosition`" class="field-label">Description Column Position</label>
           <input
             :id="`${activeTab}-descriptionColumnPosition`"
-            v-model.number="form.descriptionColumnPosition"
+            v-model.number="form.descColumnPosition"
             type="number"
             min="0"
             class="field-input"
@@ -164,6 +164,7 @@
                 <th>Keyword</th>
                 <th>Category</th>
                 <th>Sub-category</th>
+                <th>Type</th>
                 <th></th>
               </tr>
             </thead>
@@ -172,6 +173,7 @@
                 <td><input v-model="rule.keyword" class="field-input" placeholder="e.g. NETFLIX" /></td>
                 <td><input v-model="rule.category" class="field-input" placeholder="e.g. Entertainment" /></td>
                 <td><input v-model="rule.subCategory" class="field-input" placeholder="e.g. Streaming" /></td>
+                <td><input v-model="rule.type" class="field-input" placeholder="e.g. Expense" /></td>
                 <td>
                   <button class="btn-icon" title="Remove rule" @click="removeRule(i)">✕</button>
                 </td>
@@ -213,9 +215,9 @@ import type { BankConfigRequest, BankFormat, CategoryRule, ConversionStatus } fr
 import api from '@/services/api';
 
 const banks = [
-  { id: 'activoBank', name: 'ActivoBank', logo: '/AB.png' },
-  { id: 'creditoAgricola', name: 'Crédito Agrícola', logo: '/CA.png' },
-  { id: 'cryptoCom', name: 'Crypto.com', logo: '/CY.png' },
+  { id: 'ActivoBank', name: 'ActivoBank', logo: '/AB.png' },
+  { id: 'CreditoAgricola', name: 'Crédito Agrícola', logo: '/CA.png' },
+  { id: 'CryptoCom', name: 'Crypto.com', logo: '/CY.png' },
 ];
 
 const activeTab = ref<string>(banks[0].id);
@@ -229,7 +231,7 @@ const emptyForm = (): BankConfigRequest => ({
   dateFormat: undefined,
   amountColumnPosition: undefined,
   dateColumnPosition: undefined,
-  descriptionColumnPosition: undefined,
+  descColumnPosition: undefined,
   cdColumnPosition: undefined,
 });
 
@@ -283,8 +285,8 @@ async function handleSave(): Promise<void> {
     payload.amountColumnPosition = form.value.amountColumnPosition;
   if (form.value.dateColumnPosition !== undefined && form.value.dateColumnPosition !== null)
     payload.dateColumnPosition = form.value.dateColumnPosition;
-  if (form.value.descriptionColumnPosition !== undefined && form.value.descriptionColumnPosition !== null)
-    payload.descriptionColumnPosition = form.value.descriptionColumnPosition;
+  if (form.value.descColumnPosition !== undefined && form.value.descColumnPosition !== null)
+    payload.descColumnPosition = form.value.descColumnPosition;
   if (form.value.cdColumnPosition !== undefined && form.value.cdColumnPosition !== null)
     payload.cdColumnPosition = form.value.cdColumnPosition;
 
@@ -334,7 +336,7 @@ async function fetchCategoryRules(): Promise<void> {
 }
 
 function addRule(): void {
-  categoryRules.value.push({ keyword: '', category: '', subCategory: '' });
+  categoryRules.value.push({ keyword: '', category: '', subCategory: '', type: '' });
 }
 
 function removeRule(index: number): void {

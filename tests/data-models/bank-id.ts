@@ -1,6 +1,6 @@
 export enum BankId {
-  activoBank = 'activoBank',
-  creditoAgricola = 'creditoAgricola',
-  cryptoCom = 'cryptoCom',
-  all = 'all',
+  activoBank = 'ActivoBank',
+  creditoAgricola = 'CreditoAgricola',
+  cryptoCom = 'CryptoCom',
+  all = 'All',
 }
