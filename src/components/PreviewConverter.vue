@@ -209,7 +209,7 @@ onMounted(async () => {
   try {
     const rules = await api.getCategoryRules();
     typeOptions.value = [...new Set(rules.map((r) => r.type).filter((v): v is string => !!v))].sort();
-    categoryOptions.value = [...new Set(rules.map((r) => r.category).filter((v): v is string => !!v))].sort();
+    categoryOptions.value = await api.getAllCategories();
     const configs = await api.getAllBankConfigs();
     bankNameOptions.value = [...configs.map((c) => c.bankName).sort(), 'Cash'];
   } catch {
