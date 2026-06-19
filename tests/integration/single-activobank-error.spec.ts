@@ -11,7 +11,7 @@ test.describe('Single File Conversion - ActivoBank', () => {
 
   test('should show error alert when conversion fails with an invalid file', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToSingleSection();
     });
 
     await test.step('Upload a plain text file to the ActivoBank file input', async () => {

@@ -4,7 +4,7 @@ import path from 'path';
 test.describe('Convert (without preview)', () => {
   test('should convert and download when all three bank files are provided', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToMultiSection();
     });
 
     await test.step('Upload a valid ActivoBank CSV file to the ActivoBank input', async () => {

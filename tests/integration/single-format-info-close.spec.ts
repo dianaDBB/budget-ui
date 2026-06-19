@@ -9,7 +9,7 @@ test.describe('Scenario 6.5 - Single format info popover close', () => {
   }) => {
     await mockSetup.setMockMode();
     await budgetMock.mockGetBankFormat({ bankId: BankId.activoBank });
-    await budgetPage.goTo();
+    await budgetPage.goToSingleSection();
 
     await budgetPage.locators.singleFile.activoBank.formatInfo.button().click();
     await expect(budgetPage.locators.singleFile.activoBank.formatInfo.popover.header()).toBeVisible();

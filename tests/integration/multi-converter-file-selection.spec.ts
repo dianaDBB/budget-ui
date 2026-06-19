@@ -8,7 +8,7 @@ test.describe('Convert (without preview)', () => {
 
   test('should enable Convert All button when at least one file is selected', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToMultiSection();
     });
 
     await test.step('Upload a file to the ActivoBank input in the Convert (without preview) card', async () => {

@@ -11,7 +11,7 @@ test.describe('Single File Conversion - Crédito Agrícola', () => {
 
   test('should show success alert and reset inputs after successful conversion', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToSingleSection();
     });
 
     await test.step('Upload a valid Crédito Agrícola CSV file to the Crédito Agrícola file input', async () => {

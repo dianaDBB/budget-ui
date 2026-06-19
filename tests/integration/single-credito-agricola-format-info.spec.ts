@@ -9,7 +9,7 @@ test.describe('Scenario 6.3 - Single format info popover for Crédito Agrícola'
   }) => {
     await mockSetup.setMockMode();
     await budgetMock.mockGetBankFormat({ bankId: BankId.creditoAgricola });
-    await budgetPage.goTo();
+    await budgetPage.goToSingleSection();
 
     await budgetPage.locators.singleFile.creditoAgricola.formatInfo.button().click();
 

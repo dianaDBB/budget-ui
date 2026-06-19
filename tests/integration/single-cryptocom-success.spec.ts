@@ -11,7 +11,7 @@ test.describe('Single File Conversion - Crypto.com', () => {
 
   test('should show success alert and reset inputs after successful conversion', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToSingleSection();
     });
 
     await test.step('Upload a valid Crypto.com CSV file to the Crypto.com file input', async () => {

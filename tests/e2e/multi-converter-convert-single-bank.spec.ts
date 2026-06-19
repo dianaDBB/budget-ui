@@ -4,7 +4,7 @@ import path from 'path';
 test.describe('Convert (without preview)', () => {
   test('should convert and download when only "ActivoBank" file is provided', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToMultiSection();
     });
 
     await test.step('Upload a valid ActivoBank file to the ActivoBank input only', async () => {
@@ -32,7 +32,7 @@ test.describe('Convert (without preview)', () => {
 
   test('should convert and download when only "Crédito Agrícola" file is provided', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToMultiSection();
     });
 
     await test.step('Upload a valid Crédito Agrícola file to the Crédito Agrícola input only', async () => {
@@ -60,7 +60,7 @@ test.describe('Convert (without preview)', () => {
 
   test('should convert and download when only "CryptoCom" file is provided', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToMultiSection();
     });
 
     await test.step('Upload a valid Crypto.com file to the Crypto.com input only', async () => {

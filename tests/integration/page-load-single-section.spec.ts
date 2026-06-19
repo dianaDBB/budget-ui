@@ -7,7 +7,7 @@ test.describe('Page Load and Layout', () => {
 
   test('should display the Single File Conversion section with three bank cards', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToSingleSection();
     });
 
     await test.step('Verify the Single File Conversion section heading is visible', async () => {

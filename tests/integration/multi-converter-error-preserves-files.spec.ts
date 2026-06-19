@@ -11,7 +11,7 @@ test.describe('Convert (without preview)', () => {
 
   test('should not clear previously selected files after a failed conversion', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToMultiSection();
     });
 
     await test.step('Upload a file to the ActivoBank input', async () => {

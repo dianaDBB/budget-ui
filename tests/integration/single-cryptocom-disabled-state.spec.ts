@@ -7,7 +7,7 @@ test.describe('Single File Conversion - Crypto.com', () => {
 
   test('should have Convert button disabled before file selection', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToSingleSection();
     });
 
     await test.step('Verify the Convert button inside the Crypto.com card is disabled', async () => {

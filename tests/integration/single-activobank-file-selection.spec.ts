@@ -8,7 +8,7 @@ test.describe('Single File Conversion - ActivoBank', () => {
 
   test('should enable Convert button after selecting a file', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToSingleSection();
     });
 
     await test.step('Upload a file to the ActivoBank file input', async () => {

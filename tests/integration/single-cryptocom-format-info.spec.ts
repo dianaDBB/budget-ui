@@ -9,7 +9,7 @@ test.describe('Scenario 6.4 - Single format info popover for Crypto.com', () => 
   }) => {
     await mockSetup.setMockMode();
     await budgetMock.mockGetBankFormat({ bankId: BankId.cryptoCom });
-    await budgetPage.goTo();
+    await budgetPage.goToSingleSection();
 
     await budgetPage.locators.singleFile.cryptoCom.formatInfo.button().click();
 

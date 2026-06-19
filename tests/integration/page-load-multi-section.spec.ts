@@ -7,7 +7,7 @@ test.describe('Page Load and Layout', () => {
 
   test('should display the Convert (without preview) section', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToMultiSection();
     });
 
     await test.step('Verify the Convert Multiple Files card heading is visible', async () => {

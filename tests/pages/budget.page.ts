@@ -129,4 +129,14 @@ export class BudgetPage extends BasePage {
   async goTo() {
     await this.page.goto('/');
   }
+
+  async goToMultiSection() {
+    await this.page.goto('/');
+    await this.page.getByTestId('tab-multi').click();
+  }
+
+  async goToSingleSection() {
+    await this.page.goto('/');
+    await this.page.getByTestId('tab-single').click();
+  }
 }

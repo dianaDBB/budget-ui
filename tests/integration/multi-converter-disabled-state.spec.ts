@@ -7,7 +7,7 @@ test.describe('Convert (without preview)', () => {
 
   test('should have Convert All button disabled when no files are selected', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
-      await budgetPage.goTo();
+      await budgetPage.goToMultiSection();
     });
 
     await test.step('Verify all three file areas show No file selected', async () => {

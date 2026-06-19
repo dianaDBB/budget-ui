@@ -11,7 +11,7 @@ test.describe('Scenario 7.3 - Multi format info popover close', () => {
     await budgetMock.mockGetBankFormat({ bankId: BankId.activoBank });
     await budgetMock.mockGetBankFormat({ bankId: BankId.creditoAgricola });
     await budgetMock.mockGetBankFormat({ bankId: BankId.cryptoCom });
-    await budgetPage.goTo();
+    await budgetPage.goToMultiSection();
 
     await budgetPage.locators.multiFile.formatInfo.button().click();
     await expect(budgetPage.locators.multiFile.formatInfo.popover.header()).toBeVisible();

@@ -6,7 +6,7 @@ test.describe('Scenario 7.1 - Multi section format info button visible', () => {
     budgetPage,
   }) => {
     await mockSetup.setMockMode();
-    await budgetPage.goTo();
+    await budgetPage.goToMultiSection();
 
     await expect(budgetPage.locators.multiFile.formatInfo.button()).toBeVisible();
   });
