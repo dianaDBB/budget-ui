@@ -5,6 +5,13 @@
     <template v-else>
       <div class="categories-table-wrapper">
         <table class="categories-table">
+          <colgroup>
+            <col />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 40px" />
+          </colgroup>
           <thead>
             <tr>
               <th>Keyword</th>
@@ -16,7 +23,14 @@
           </thead>
           <tbody>
             <tr v-for="(rule, i) in categoryRules" :key="i">
-              <td><input v-model="rule.keyword" class="cell-input" :class="{ 'cell--required': !rule.keyword }" placeholder="e.g. NETFLIX" /></td>
+              <td>
+                <input
+                  v-model="rule.keyword"
+                  class="cell-input"
+                  :class="{ 'cell--required': !rule.keyword }"
+                  placeholder="e.g. NETFLIX"
+                />
+              </td>
               <td>
                 <select v-model="rule.type" class="cell-select">
                   <option value=""></option>
@@ -217,7 +231,7 @@ onMounted(fetchCategoryRules);
 }
 
 .cell-select {
-  min-width: 120px;
+  width: 100%;
   padding: 4px 6px;
   border: 1px solid #d1d5db;
   border-radius: 4px;

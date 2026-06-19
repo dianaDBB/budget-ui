@@ -53,7 +53,7 @@
             </div>
           </section>
 
-          <!-- Categories -->
+          <!-- Categories Rules -->
           <section v-if="activeTab === 'categories'" class="converters-section" data-testid="admin-section">
             <AdminCategories />
           </section>
@@ -76,10 +76,10 @@
 import { ref, onMounted } from 'vue';
 
 const tabs = [
-  { id: 'convert', label: 'Convert' },
-  { id: 'multi', label: 'Convert (without preview)' },
-  { id: 'single', label: 'Single File Conversion' },
-  { id: 'categories', label: 'Categories' },
+  { id: 'convert', label: 'Convert & Categorize' },
+  { id: 'multi', label: 'Multiple Convert' },
+  { id: 'single', label: 'Single Convert' },
+  { id: 'categories', label: 'Categories & Types Rules' },
   { id: 'file-config', label: 'File Config' },
 ];
 
