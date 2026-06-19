@@ -65,9 +65,10 @@
           <table class="preview-table" data-testid="preview-table">
             <thead>
               <tr>
+                <th>Bank</th>
                 <th>Date</th>
                 <th>Description</th>
-                <th>Amount</th>
+                <th>Amount (€)</th>
                 <th>Type</th>
                 <th>Category</th>
                 <th>Subcategory</th>
@@ -75,10 +76,26 @@
             </thead>
             <tbody>
               <tr v-for="(tx, idx) in previewData" :key="idx" :data-testid="`preview-row-${idx}`">
-                <td data-testid="preview-date">{{ tx.date }}</td>
-                <td data-testid="preview-description">{{ tx.originalDescription }}</td>
-                <td data-testid="preview-amount" :class="tx.value < 0 ? 'negative' : 'positive'">
-                  {{ formatAmount(tx.value) }}
+                <td data-testid="preview-bank-name">{{ tx.bankName }}</td>
+                <td data-testid="preview-date">{{ formatDate(tx.date) }}</td>
+                <td data-testid="preview-description">
+                  <input
+                    v-model="tx.originalDescription"
+                    type="text"
+                    class="cell-input cell-input--description"
+                    data-testid="preview-description-input"
+                  />
+                </td>
+                <td data-testid="preview-amount">
+                  <input
+                    :value="tx.value.toFixed(2)"
+                    type="text"
+                    inputmode="decimal"
+                    class="cell-input cell-input--amount"
+                    :class="tx.value < 0 ? 'cell-input--negative' : 'cell-input--positive'"
+                    data-testid="preview-amount-input"
+                    @blur="(e) => { const raw = (e.target as HTMLInputElement).value.replace(',', '.'); const v = parseFloat(raw); tx.value = isNaN(v) ? tx.value : parseFloat(v.toFixed(2)); (e.target as HTMLInputElement).value = tx.value.toFixed(2); }"
+                  />
                 </td>
                 <td>
                   <select v-model="tx.type" class="cell-select" data-testid="preview-type-select">
@@ -93,7 +110,11 @@
                   </select>
                 </td>
                 <td>
-                  <select v-model="tx.subCategory" class="cell-select" data-testid="preview-subcategory-select">
+                  <select
+                    v-model="tx.subCategory"
+                    class="cell-select cell-select--small"
+                    data-testid="preview-subcategory-select"
+                  >
                     <option value="">— none —</option>
                     <option v-for="opt in subCategoryOptions" :key="opt" :value="opt">{{ opt }}</option>
                   </select>
@@ -167,8 +188,11 @@ function handleFileSelect(event: Event, bankId: string): void {
   }
 }
 
-function formatAmount(value: number): string {
-  return new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(value);
+function formatDate(value: string): string {
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return value;
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
 }
 
 async function handleGeneratePreview(): Promise<void> {
@@ -183,7 +207,10 @@ async function handleGeneratePreview(): Promise<void> {
       .filter((entry): entry is [string, File] => entry[1] !== null)
       .map(([bankName, file]) => ({ bankName, file }));
 
-    previewData.value = await api.previewAllBankFiles(files);
+    previewData.value = (await api.previewAllBankFiles(files)).map((tx) => ({
+      ...tx,
+      value: parseFloat(tx.value.toFixed(2)),
+    }));
 
     // Merge values from preview data into dropdown options so existing
     // assignments are always selectable even if absent from category rules.
@@ -479,6 +506,46 @@ async function handleGenerateExcel(): Promise<void> {
     border-color: #764ba2;
     box-shadow: 0 0 0 2px rgba(118, 75, 162, 0.2);
   }
+}
+
+.cell-input {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #374151;
+  background: white;
+
+  &:focus {
+    outline: none;
+    border-color: #764ba2;
+    box-shadow: 0 0 0 2px rgba(118, 75, 162, 0.2);
+  }
+}
+
+.cell-input--amount {
+  min-width: 70px;
+  max-width: 90px;
+  text-align: right;
+}
+
+.cell-input--negative {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.cell-input--positive {
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.cell-input--description {
+  min-width: 300px;
+}
+
+.cell-select--small {
+  min-width: 80px;
 }
 
 .alert {
