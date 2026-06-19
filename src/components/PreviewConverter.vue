@@ -104,7 +104,12 @@
                   </select>
                 </td>
                 <td>
-                  <select v-model="tx.category" class="cell-select" data-testid="preview-category-select">
+                  <select
+                    v-model="tx.category"
+                    class="cell-select"
+                    data-testid="preview-category-select"
+                    @change="handleCategoryChange(tx, tx.category)"
+                  >
                     <option value="">— none —</option>
                     <option v-for="opt in categoryOptions" :key="opt" :value="opt">{{ opt }}</option>
                   </select>
@@ -114,9 +119,10 @@
                     v-model="tx.subCategory"
                     class="cell-select cell-select--small"
                     data-testid="preview-subcategory-select"
+                    :disabled="!tx.category || loadingSubcategoryFor.has(tx.category)"
                   >
                     <option value="">— none —</option>
-                    <option v-for="opt in subCategoryOptions" :key="opt" :value="opt">{{ opt }}</option>
+                    <option v-for="opt in getSubcategoryOptions(tx.category)" :key="opt" :value="opt">{{ opt }}</option>
                   </select>
                 </td>
               </tr>
@@ -161,7 +167,8 @@ const previewData = ref<TransactionPreview[]>([]);
 
 const typeOptions = ref<string[]>([]);
 const categoryOptions = ref<string[]>([]);
-const subCategoryOptions = ref<string[]>([]);
+const categorySubcategoryMap = ref<Record<string, string[]>>({});
+const loadingSubcategoryFor = ref(new Set<string>());
 
 const previewStatus = ref({ isLoading: false, isError: false, message: '' });
 const excelStatus = ref({ isLoading: false, isSuccess: false, isError: false, message: '' });
@@ -171,7 +178,6 @@ onMounted(async () => {
     const rules = await api.getCategoryRules();
     typeOptions.value = [...new Set(rules.map((r) => r.type).filter((v): v is string => !!v))].sort();
     categoryOptions.value = [...new Set(rules.map((r) => r.category).filter((v): v is string => !!v))].sort();
-    subCategoryOptions.value = [...new Set(rules.map((r) => r.subCategory).filter((v): v is string => !!v))].sort();
   } catch {
     // Dropdowns will be empty; user can still interact
   }
@@ -186,6 +192,32 @@ function handleFileSelect(event: Event, bankId: string): void {
     selectedFiles.value[bankId] = files[0];
     previewStatus.value.isError = false;
   }
+}
+
+function getSubcategoryOptions(category: string | null | undefined): string[] {
+  if (!category) return [];
+  return categorySubcategoryMap.value[category] ?? [];
+}
+
+async function loadSubcategoriesFor(category: string): Promise<void> {
+  if (categorySubcategoryMap.value[category]) return;
+  loadingSubcategoryFor.value = new Set([...loadingSubcategoryFor.value, category]);
+  try {
+    const subs = await api.getSubcategoriesByCategory(category);
+    categorySubcategoryMap.value = { ...categorySubcategoryMap.value, [category]: subs };
+  } catch {
+    categorySubcategoryMap.value = { ...categorySubcategoryMap.value, [category]: [] };
+  } finally {
+    const next = new Set(loadingSubcategoryFor.value);
+    next.delete(category);
+    loadingSubcategoryFor.value = next;
+  }
+}
+
+async function handleCategoryChange(tx: TransactionPreview, category: string | null | undefined): Promise<void> {
+  tx.subCategory = null;
+  if (!category) return;
+  await loadSubcategoriesFor(category);
 }
 
 function formatDate(value: string): string {
@@ -226,10 +258,9 @@ async function handleGeneratePreview(): Promise<void> {
       categoryOptions.value,
       previewData.value.map((t) => t.category),
     );
-    subCategoryOptions.value = merge(
-      subCategoryOptions.value,
-      previewData.value.map((t) => t.subCategory),
-    );
+
+    const uniqueCategories = [...new Set(previewData.value.map((t) => t.category).filter((c): c is string => !!c))];
+    await Promise.all(uniqueCategories.map((cat) => loadSubcategoriesFor(cat)));
 
     previewStatus.value.isLoading = false;
   } catch (error: unknown) {

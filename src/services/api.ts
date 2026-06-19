@@ -98,6 +98,13 @@ class BudgetApiService {
     return response.data;
   }
 
+  async getSubcategoriesByCategory(categoryName: string): Promise<string[]> {
+    const response = await this.client.get(`/subcategory/${encodeURIComponent(categoryName)}/all`, {
+      headers: { Accept: 'application/json' },
+    });
+    return (response.data as { subcategory: string }[]).map((item) => item.subcategory).sort();
+  }
+
   async updateCategoryRules(rules: CategoryRule[]): Promise<void> {
     await this.client.put('/category-rule/', rules, {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
