@@ -45,12 +45,20 @@ export interface BankConfigRequest {
   cdColumnPosition?: number;
 }
 
+export interface BudgetType {
+  id: string;
+  type: string;
+}
+
 export interface CategoryRule {
   id?: string;
   keyword?: string;
   category?: string;
+  category_id?: string;
   subCategory?: string;
+  subCategory_id?: string;
   type?: string;
+  type_id?: string;
 }
 
 export interface BankConfig {

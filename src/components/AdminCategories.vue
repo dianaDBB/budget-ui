@@ -8,18 +8,37 @@
           <thead>
             <tr>
               <th>Keyword</th>
+              <th>Type</th>
               <th>Category</th>
               <th>Sub-category</th>
-              <th>Type</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(rule, i) in categoryRules" :key="i">
-              <td><input v-model="rule.keyword" class="field-input" placeholder="e.g. NETFLIX" /></td>
-              <td><input v-model="rule.category" class="field-input" placeholder="e.g. Entertainment" /></td>
-              <td><input v-model="rule.subCategory" class="field-input" placeholder="e.g. Streaming" /></td>
-              <td><input v-model="rule.type" class="field-input" placeholder="e.g. Expense" /></td>
+              <td><input v-model="rule.keyword" class="cell-input" :class="{ 'cell--required': !rule.keyword }" placeholder="e.g. NETFLIX" /></td>
+              <td>
+                <select v-model="rule.type" class="cell-select">
+                  <option value=""></option>
+                  <option v-for="t in typeOptions" :key="t.id" :value="t.type">{{ t.type }}</option>
+                </select>
+              </td>
+              <td>
+                <select v-model="rule.category" class="cell-select" @change="handleCategoryChange(rule)">
+                  <option value=""></option>
+                  <option v-for="opt in categoryOptions" :key="opt" :value="opt">{{ opt }}</option>
+                </select>
+              </td>
+              <td>
+                <select
+                  v-model="rule.subCategory"
+                  class="cell-select"
+                  :disabled="!rule.category || loadingSubcategoryFor.has(rule.category)"
+                >
+                  <option value=""></option>
+                  <option v-for="opt in getSubcategoryOptions(rule.category)" :key="opt" :value="opt">{{ opt }}</option>
+                </select>
+              </td>
               <td>
                 <button class="btn-icon" title="Remove rule" @click="removeRule(i)">✕</button>
               </td>
@@ -56,10 +75,14 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import type { CategoryRule, ConversionStatus } from '@/types';
+import type { CategoryRule, BudgetType, ConversionStatus } from '@/types';
 import api from '@/services/api';
 
 const categoryRules = ref<CategoryRule[]>([]);
+const typeOptions = ref<BudgetType[]>([]);
+const categoryOptions = ref<string[]>([]);
+const categorySubcategoryMap = ref<Record<string, string[]>>({});
+const loadingSubcategoryFor = ref(new Set<string>());
 const categoriesLoading = ref(false);
 const categoriesStatus = ref<ConversionStatus>({
   isLoading: false,
@@ -71,7 +94,14 @@ async function fetchCategoryRules(): Promise<void> {
   categoriesLoading.value = true;
   categoriesStatus.value = { isLoading: false, isSuccess: false, isError: false };
   try {
-    categoryRules.value = await api.getCategoryRules();
+    [categoryRules.value, typeOptions.value, categoryOptions.value] = await Promise.all([
+      api.getCategoryRules(),
+      api.getAllTypes(),
+      api.getAllCategories(),
+    ]);
+    // Pre-load subcategories for categories already in use
+    const usedCategories = [...new Set(categoryRules.value.map((r) => r.category).filter((c): c is string => !!c))];
+    await Promise.all(usedCategories.map((cat) => loadSubcategoriesFor(cat)));
   } catch {
     categoriesStatus.value = {
       isLoading: false,
@@ -82,6 +112,32 @@ async function fetchCategoryRules(): Promise<void> {
   } finally {
     categoriesLoading.value = false;
   }
+}
+
+function getSubcategoryOptions(category: string | null | undefined): string[] {
+  if (!category) return [];
+  return categorySubcategoryMap.value[category] ?? [];
+}
+
+async function loadSubcategoriesFor(category: string): Promise<void> {
+  if (categorySubcategoryMap.value[category]) return;
+  loadingSubcategoryFor.value = new Set([...loadingSubcategoryFor.value, category]);
+  try {
+    const subs = await api.getSubcategoriesByCategory(category);
+    categorySubcategoryMap.value = { ...categorySubcategoryMap.value, [category]: subs };
+  } catch {
+    categorySubcategoryMap.value = { ...categorySubcategoryMap.value, [category]: [] };
+  } finally {
+    const next = new Set(loadingSubcategoryFor.value);
+    next.delete(category);
+    loadingSubcategoryFor.value = next;
+  }
+}
+
+async function handleCategoryChange(rule: CategoryRule): Promise<void> {
+  rule.subCategory = '';
+  if (!rule.category) return;
+  await loadSubcategoriesFor(rule.category);
 }
 
 function addRule(): void {
@@ -134,22 +190,54 @@ onMounted(fetchCategoryRules);
   font-family: ui-monospace, monospace;
 }
 
-.field-input {
-  padding: 10px 12px;
+.cell-input {
+  width: 100%;
+  padding: 4px 6px;
   border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #1f2937;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  outline: none;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #374151;
+  background: white;
+  box-sizing: border-box;
 
   &:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+    outline: none;
+    border-color: #764ba2;
+    box-shadow: 0 0 0 2px rgba(118, 75, 162, 0.2);
   }
 
   &::placeholder {
     color: #9ca3af;
+  }
+}
+
+.cell--required {
+  border-color: #ef4444 !important;
+  background-color: #fff5f5 !important;
+}
+
+.cell-select {
+  min-width: 120px;
+  padding: 4px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #374151;
+  background: white;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #764ba2;
+    box-shadow: 0 0 0 2px rgba(118, 75, 162, 0.2);
+  }
+
+  &:disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+    border-color: #e5e7eb;
+    cursor: not-allowed;
   }
 }
 
@@ -299,11 +387,6 @@ onMounted(fetchCategoryRules);
 
   tr:last-child td {
     border-bottom: none;
-  }
-
-  .field-input {
-    width: 100%;
-    box-sizing: border-box;
   }
 }
 
