@@ -76,7 +76,7 @@ export default defineConfig({
       testMatch: '**/tests/e2e/**/*.spec.ts',
       outputDir: 'tests/output/e2e',
       use: {
-        baseURL: 'http://localhost:5173/',
+        baseURL: 'https://budget-ui-ht2i.onrender.com/',
         actionTimeout: 30000, // e2e are slow, increase default action timeout to 30sec
       },
       expect: {
