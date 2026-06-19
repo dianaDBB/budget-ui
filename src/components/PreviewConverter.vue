@@ -207,10 +207,13 @@ const excelStatus = ref({ isLoading: false, isSuccess: false, isError: false, me
 
 onMounted(async () => {
   try {
-    const rules = await api.getCategoryRules();
-    typeOptions.value = [...new Set(rules.map((r) => r.type).filter((v): v is string => !!v))].sort();
-    categoryOptions.value = (await api.getAllCategories()).map((c) => c.category);
-    const configs = await api.getAllBankConfigs();
+    const [types, categories, configs] = await Promise.all([
+      api.getAllTypes(),
+      api.getAllCategories(),
+      api.getAllBankConfigs(),
+    ]);
+    typeOptions.value = types.map((t) => t.type).sort();
+    categoryOptions.value = categories.map((c) => c.category);
     bankNameOptions.value = [...configs.map((c) => c.bankName).sort(), 'Cash'];
   } catch {
     // Dropdowns will be empty; user can still interact
