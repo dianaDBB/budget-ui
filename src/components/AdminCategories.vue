@@ -10,7 +10,7 @@
             <col style="width: 20%" />
             <col style="width: 20%" />
             <col style="width: 20%" />
-            <col style="width: 40px" />
+            <col style="width: 60px" />
           </colgroup>
           <thead>
             <tr>
@@ -22,39 +22,59 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(rule, i) in categoryRules" :key="i">
+            <tr v-for="(row, i) in categoryRules" :key="row._key">
               <td>
+                <span v-if="!row._isEditing" class="cell-text">{{ row.keyword }}</span>
                 <input
-                  v-model="rule.keyword"
+                  v-else
+                  v-model="row.keyword"
                   class="cell-input"
-                  :class="{ 'cell--required': !rule.keyword }"
+                  :class="{ 'cell--required': !row.keyword }"
                   placeholder="e.g. NETFLIX"
                 />
               </td>
               <td>
-                <select v-model="rule.type" class="cell-select">
+                <span v-if="!row._isEditing" class="cell-text">{{ getTypeName(row.type_id) }}</span>
+                <select v-else v-model="row.type_id" class="cell-select">
                   <option value=""></option>
-                  <option v-for="t in typeOptions" :key="t.id" :value="t.type">{{ t.type }}</option>
+                  <option v-for="t in typeOptions" :key="t.id" :value="t.id">{{ t.type }}</option>
                 </select>
               </td>
               <td>
-                <select v-model="rule.category" class="cell-select" @change="handleCategoryChange(rule)">
+                <span v-if="!row._isEditing" class="cell-text">{{ getCategoryName(row.category_id) }}</span>
+                <select v-else v-model="row.category_id" class="cell-select" @change="handleCategoryChange(row)">
                   <option value=""></option>
-                  <option v-for="opt in categoryOptions" :key="opt" :value="opt">{{ opt }}</option>
+                  <option v-for="opt in categoryOptions" :key="opt.id" :value="opt.id">{{ opt.category }}</option>
                 </select>
               </td>
               <td>
+                <span v-if="!row._isEditing" class="cell-text">{{
+                  getSubcategoryName(row.category_id, row.subCategory_id)
+                }}</span>
                 <select
-                  v-model="rule.subCategory"
+                  v-else
+                  v-model="row.subCategory_id"
                   class="cell-select"
-                  :disabled="!rule.category || loadingSubcategoryFor.has(rule.category)"
+                  :disabled="!row.category_id || loadingSubcategoryFor.has(getCategoryName(row.category_id))"
                 >
                   <option value=""></option>
-                  <option v-for="opt in getSubcategoryOptions(rule.category)" :key="opt" :value="opt">{{ opt }}</option>
+                  <option v-for="opt in getSubcategoryOptions(row.category_id)" :key="opt.id" :value="opt.id">
+                    {{ opt.subcategory }}
+                  </option>
                 </select>
               </td>
               <td>
-                <button class="btn-icon" title="Remove rule" @click="removeRule(i)">✕</button>
+                <button v-if="row._isNew" class="btn-icon btn-icon--delete" title="Remove rule" @click="removeRule(i)">
+                  ✕
+                </button>
+                <button
+                  v-else
+                  class="btn-icon btn-icon--edit"
+                  :title="row._isEditing ? 'Done editing' : 'Edit rule'"
+                  @click="toggleEdit(row)"
+                >
+                  {{ row._isEditing ? '✓' : '✎' }}
+                </button>
               </td>
             </tr>
           </tbody>
@@ -89,13 +109,20 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import type { CategoryRule, BudgetType, ConversionStatus } from '@/types';
+import type { CategoryRule, CategoryRuleSavePayload, BudgetType, ConversionStatus } from '@/types';
 import api from '@/services/api';
 
-const categoryRules = ref<CategoryRule[]>([]);
+interface CategoryRuleRow extends CategoryRule {
+  _key: string;
+  _isNew: boolean;
+  _isEditing: boolean;
+  _isDirty: boolean;
+}
+
+const categoryRules = ref<CategoryRuleRow[]>([]);
 const typeOptions = ref<BudgetType[]>([]);
-const categoryOptions = ref<string[]>([]);
-const categorySubcategoryMap = ref<Record<string, string[]>>({});
+const categoryOptions = ref<{ id: string; category: string }[]>([]);
+const categorySubcategoryMap = ref<Record<string, { id: string; subcategory: string }[]>>({});
 const loadingSubcategoryFor = ref(new Set<string>());
 const categoriesLoading = ref(false);
 const categoriesStatus = ref<ConversionStatus>({
@@ -104,15 +131,29 @@ const categoriesStatus = ref<ConversionStatus>({
   isError: false,
 });
 
+let _keyCounter = 0;
+function nextKey(): string {
+  return `row-${++_keyCounter}`;
+}
+
 async function fetchCategoryRules(): Promise<void> {
   categoriesLoading.value = true;
   categoriesStatus.value = { isLoading: false, isSuccess: false, isError: false };
   try {
-    [categoryRules.value, typeOptions.value, categoryOptions.value] = await Promise.all([
+    const [rules, types, categories] = await Promise.all([
       api.getCategoryRules(),
       api.getAllTypes(),
       api.getAllCategories(),
     ]);
+    typeOptions.value = types;
+    categoryOptions.value = categories;
+    categoryRules.value = rules.map((r) => ({
+      ...r,
+      _key: r.id ?? nextKey(),
+      _isNew: false,
+      _isEditing: false,
+      _isDirty: false,
+    }));
     // Pre-load subcategories for categories already in use
     const usedCategories = [...new Set(categoryRules.value.map((r) => r.category).filter((c): c is string => !!c))];
     await Promise.all(usedCategories.map((cat) => loadSubcategoriesFor(cat)));
@@ -128,9 +169,24 @@ async function fetchCategoryRules(): Promise<void> {
   }
 }
 
-function getSubcategoryOptions(category: string | null | undefined): string[] {
-  if (!category) return [];
-  return categorySubcategoryMap.value[category] ?? [];
+function getTypeName(typeId: string | undefined): string {
+  return typeOptions.value.find((t) => t.id === typeId)?.type ?? '';
+}
+
+function getCategoryName(categoryId: string | undefined): string {
+  return categoryOptions.value.find((c) => c.id === categoryId)?.category ?? '';
+}
+
+function getSubcategoryName(categoryId: string | undefined, subcategoryId: string | undefined): string {
+  if (!categoryId || !subcategoryId) return '';
+  const catName = getCategoryName(categoryId);
+  return categorySubcategoryMap.value[catName]?.find((s) => s.id === subcategoryId)?.subcategory ?? '';
+}
+
+function getSubcategoryOptions(categoryId: string | null | undefined): { id: string; subcategory: string }[] {
+  if (!categoryId) return [];
+  const catName = getCategoryName(categoryId);
+  return categorySubcategoryMap.value[catName] ?? [];
 }
 
 async function loadSubcategoriesFor(category: string): Promise<void> {
@@ -148,14 +204,32 @@ async function loadSubcategoriesFor(category: string): Promise<void> {
   }
 }
 
-async function handleCategoryChange(rule: CategoryRule): Promise<void> {
-  rule.subCategory = '';
-  if (!rule.category) return;
-  await loadSubcategoriesFor(rule.category);
+async function handleCategoryChange(row: CategoryRuleRow): Promise<void> {
+  row.subCategory_id = '';
+  if (!row.category_id) return;
+  const catName = getCategoryName(row.category_id);
+  if (!catName) return;
+  await loadSubcategoriesFor(catName);
 }
 
 function addRule(): void {
-  categoryRules.value.push({ keyword: '', category: '', subCategory: '', type: '' });
+  categoryRules.value.push({
+    keyword: '',
+    type_id: '',
+    category_id: '',
+    subCategory_id: '',
+    _key: nextKey(),
+    _isNew: true,
+    _isEditing: true,
+    _isDirty: true,
+  });
+}
+
+function toggleEdit(row: CategoryRuleRow): void {
+  if (!row._isEditing) {
+    row._isDirty = true;
+  }
+  row._isEditing = !row._isEditing;
 }
 
 function removeRule(index: number): void {
@@ -165,7 +239,30 @@ function removeRule(index: number): void {
 async function saveCategories(): Promise<void> {
   categoriesStatus.value = { isLoading: true, isSuccess: false, isError: false };
   try {
-    await api.updateCategoryRules(categoryRules.value);
+    const rules: CategoryRuleSavePayload[] = categoryRules.value
+      .filter((row) => row._isNew || row._isDirty)
+      .map(
+        ({
+          _key: _k,
+          _isNew: _n,
+          _isEditing: _e,
+          _isDirty: _d,
+          type: _t,
+          category: _c,
+          subCategory: _sc,
+          type_id,
+          category_id,
+          subCategory_id,
+          ...rest
+        }): CategoryRuleSavePayload => ({
+          ...rest,
+          typeId: type_id,
+          categoryId: category_id,
+          subcategoryId: subCategory_id,
+        }),
+      );
+    await api.updateCategoryRules(rules);
+    await fetchCategoryRules();
     categoriesStatus.value = {
       isLoading: false,
       isSuccess: true,
@@ -310,19 +407,40 @@ onMounted(fetchCategoryRules);
   }
 }
 
+.cell-text {
+  display: block;
+  padding: 4px 6px;
+  font-size: 12px;
+  color: #374151;
+  min-height: 26px;
+  line-height: 18px;
+}
+
 .btn-icon {
   background: none;
   border: none;
   cursor: pointer;
-  color: #9ca3af;
   font-size: 14px;
   padding: 4px 8px;
   border-radius: 4px;
   transition: color 0.2s, background 0.2s;
 
-  &:hover {
-    color: #dc2626;
-    background: #fef2f2;
+  &--delete {
+    color: #9ca3af;
+
+    &:hover {
+      color: #dc2626;
+      background: #fef2f2;
+    }
+  }
+
+  &--edit {
+    color: #667eea;
+
+    &:hover {
+      color: #764ba2;
+      background: #f5f3ff;
+    }
   }
 }
 

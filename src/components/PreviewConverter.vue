@@ -209,7 +209,7 @@ onMounted(async () => {
   try {
     const rules = await api.getCategoryRules();
     typeOptions.value = [...new Set(rules.map((r) => r.type).filter((v): v is string => !!v))].sort();
-    categoryOptions.value = await api.getAllCategories();
+    categoryOptions.value = (await api.getAllCategories()).map((c) => c.category);
     const configs = await api.getAllBankConfigs();
     bankNameOptions.value = [...configs.map((c) => c.bankName).sort(), 'Cash'];
   } catch {
@@ -238,7 +238,7 @@ async function loadSubcategoriesFor(category: string): Promise<void> {
   loadingSubcategoryFor.value = new Set([...loadingSubcategoryFor.value, category]);
   try {
     const subs = await api.getSubcategoriesByCategory(category);
-    categorySubcategoryMap.value = { ...categorySubcategoryMap.value, [category]: subs };
+    categorySubcategoryMap.value = { ...categorySubcategoryMap.value, [category]: subs.map((s) => s.subcategory) };
   } catch {
     categorySubcategoryMap.value = { ...categorySubcategoryMap.value, [category]: [] };
   } finally {

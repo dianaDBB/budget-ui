@@ -1,4 +1,12 @@
-import { BankFormat, BankConfig, BankConfigRequest, CategoryRule, BudgetType, TransactionPreview } from '@/types';
+import {
+  BankFormat,
+  BankConfig,
+  BankConfigRequest,
+  CategoryRule,
+  CategoryRuleSavePayload,
+  BudgetType,
+  TransactionPreview,
+} from '@/types';
 import axios, { AxiosInstance } from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
@@ -105,21 +113,23 @@ class BudgetApiService {
     return response.data;
   }
 
-  async getAllCategories(): Promise<string[]> {
+  async getAllCategories(): Promise<{ id: string; category: string }[]> {
     const response = await this.client.get('/category/all', {
       headers: { Accept: 'application/json' },
     });
-    return (response.data as { id: string; category: string }[]).map((item) => item.category).sort();
+    return (response.data as { id: string; category: string }[]).sort((a, b) => a.category.localeCompare(b.category));
   }
 
-  async getSubcategoriesByCategory(categoryName: string): Promise<string[]> {
+  async getSubcategoriesByCategory(categoryName: string): Promise<{ id: string; subcategory: string }[]> {
     const response = await this.client.get(`/subcategory/${encodeURIComponent(categoryName)}/all`, {
       headers: { Accept: 'application/json' },
     });
-    return (response.data as { subcategory: string }[]).map((item) => item.subcategory).sort();
+    return (response.data as { id: string; subcategory: string }[]).sort((a, b) =>
+      a.subcategory.localeCompare(b.subcategory),
+    );
   }
 
-  async updateCategoryRules(rules: CategoryRule[]): Promise<void> {
+  async updateCategoryRules(rules: CategoryRuleSavePayload[]): Promise<void> {
     await this.client.put('/category-rule/', rules, {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     });

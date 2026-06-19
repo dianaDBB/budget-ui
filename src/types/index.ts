@@ -61,6 +61,14 @@ export interface CategoryRule {
   type_id?: string;
 }
 
+export interface CategoryRuleSavePayload {
+  id?: string;
+  keyword?: string;
+  typeId?: string;
+  categoryId?: string;
+  subcategoryId?: string;
+}
+
 export interface BankConfig {
   id: string;
   bankName: string;
