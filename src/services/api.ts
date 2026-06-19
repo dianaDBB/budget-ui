@@ -159,6 +159,12 @@ class BudgetApiService {
 
     return response.data;
   }
+
+  async refreshCache(): Promise<void> {
+    await this.client.post('/cache/refresh', null, {
+      headers: { Accept: 'application/json' },
+    });
+  }
 }
 
 export default new BudgetApiService();

@@ -62,6 +62,11 @@
           <section v-if="activeTab === 'file-config'" class="converters-section" data-testid="admin-section">
             <AdminFileConfig />
           </section>
+
+          <!-- Cache -->
+          <section v-if="activeTab === 'cache'" class="converters-section" data-testid="cache-section">
+            <AdminCache />
+          </section>
         </template>
       </div>
     </main>
@@ -81,6 +86,7 @@ const tabs = [
   { id: 'single', label: 'Single Convert' },
   { id: 'categories', label: 'Categories & Types Rules' },
   { id: 'file-config', label: 'File Config' },
+  { id: 'cache', label: 'Cache' },
 ];
 
 const activeTab = ref('convert');
@@ -88,6 +94,7 @@ import SingleFileConverter from '@/components/SingleFileConverter.vue';
 import MultiFileConverter from '@/components/MultiFileConverter.vue';
 import AdminCategories from '@/components/AdminCategories.vue';
 import AdminFileConfig from '@/components/AdminFileConfig.vue';
+import AdminCache from '@/components/AdminCache.vue';
 import PreviewConverter from '@/components/PreviewConverter.vue';
 import api from '@/services/api';
 import type { BankOption } from '@/types';
