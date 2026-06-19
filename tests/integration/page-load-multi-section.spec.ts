@@ -5,7 +5,7 @@ test.describe('Page Load and Layout', () => {
     await mockSetup.setMockMode();
   });
 
-  test('should display the Multiple File Conversion section', async ({ budgetPage }) => {
+  test('should display the Convert (without preview) section', async ({ budgetPage }) => {
     await test.step('Navigate to the Budget UI application', async () => {
       await budgetPage.goTo();
     });

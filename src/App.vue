@@ -12,8 +12,7 @@
         <div class="intro-section">
           <h2 data-testid="intro-header">Welcome to Budget Application</h2>
           <p data-testid="intro-desc">
-            Convert different extract files from your bank account to a standardized format. Choose to convert
-            individual bank files or process multiple banks at once.
+            Convert different extracted files from your bank account to a standardized format.
           </p>
         </div>
 
@@ -24,30 +23,44 @@
         </div>
 
         <template v-else>
-          <!-- Multiple File Conversion -->
-          <section class="converters-section" data-testid="multi-file-section">
-            <h2 class="section-title" data-testid="main-header">Multiple File Conversion</h2>
+          <nav class="tabs" data-testid="tabs-nav">
+            <button
+              v-for="tab in tabs"
+              :key="tab.id"
+              class="tab-btn"
+              :class="{ active: activeTab === tab.id }"
+              :data-testid="`tab-${tab.id}`"
+              @click="activeTab = tab.id"
+            >
+              {{ tab.label }}
+            </button>
+          </nav>
+
+          <!-- Convert -->
+          <section v-if="activeTab === 'convert'" class="converters-section" data-testid="convert-section">
+            <PreviewConverter :banks="banks" />
+          </section>
+
+          <!-- Convert (without preview) -->
+          <section v-if="activeTab === 'multi'" class="converters-section" data-testid="multi-file-section">
             <MultiFileConverter :banks="banks" />
           </section>
 
           <!-- Single File Conversion -->
-          <section class="converters-section" data-testid="single-file-section">
-            <h2 class="section-title" data-testid="main-header">Single File Conversion</h2>
+          <section v-if="activeTab === 'single'" class="converters-section" data-testid="single-file-section">
             <div class="converters-grid">
               <SingleFileConverter v-for="bank in banks" :key="bank.id" :bank="bank" />
             </div>
           </section>
 
-          <!-- Admin -->
-          <section class="converters-section" data-testid="admin-section">
-            <h2 class="section-title" data-testid="admin-header">Admin</h2>
-            <AdminPanel />
+          <!-- Categories -->
+          <section v-if="activeTab === 'categories'" class="converters-section" data-testid="admin-section">
+            <AdminCategories />
           </section>
 
-          <!-- Convert -->
-          <section class="converters-section" data-testid="convert-section">
-            <h2 class="section-title" data-testid="convert-header">Convert</h2>
-            <PreviewConverter :banks="banks" />
+          <!-- File Config -->
+          <section v-if="activeTab === 'file-config'" class="converters-section" data-testid="admin-section">
+            <AdminFileConfig />
           </section>
         </template>
       </div>
@@ -61,9 +74,20 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+
+const tabs = [
+  { id: 'convert', label: 'Convert' },
+  { id: 'multi', label: 'Convert (without preview)' },
+  { id: 'single', label: 'Single File Conversion' },
+  { id: 'categories', label: 'Categories' },
+  { id: 'file-config', label: 'File Config' },
+];
+
+const activeTab = ref('convert');
 import SingleFileConverter from '@/components/SingleFileConverter.vue';
 import MultiFileConverter from '@/components/MultiFileConverter.vue';
-import AdminPanel from '@/components/AdminPanel.vue';
+import AdminCategories from '@/components/AdminCategories.vue';
+import AdminFileConfig from '@/components/AdminFileConfig.vue';
 import PreviewConverter from '@/components/PreviewConverter.vue';
 import api from '@/services/api';
 import type { BankOption } from '@/types';
@@ -185,8 +209,48 @@ onMounted(async () => {
   }
 }
 
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: white;
+  border-radius: 12px 12px 0 0;
+  padding: 8px 8px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  border-bottom: 3px solid transparent;
+
+  &:hover:not(.active) {
+    background: #f3f4f6;
+    color: #374151;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom-color: transparent;
+  }
+}
+
 .converters-section {
   margin-bottom: 40px;
+  background: white;
+  border-radius: 0 12px 12px 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
   .section-title {
     color: #1f2937;

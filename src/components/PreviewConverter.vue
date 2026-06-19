@@ -249,7 +249,7 @@ async function handleGenerateExcel(): Promise<void> {
 }
 
 .card-header {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 20px;
   display: flex;
@@ -301,20 +301,20 @@ async function handleGenerateExcel(): Promise<void> {
   .bank-label {
     display: flex;
     padding: 12px;
-    border: 2px solid #6ee7b7;
+    border: 2px solid #c4b5fd;
     border-radius: 8px;
-    background: #f0fdf4;
+    background: #f5f7ff;
     cursor: pointer;
     align-items: center;
     gap: 8px;
     font-weight: 500;
     font-size: 14px;
-    color: #065f46;
+    color: #667eea;
     transition: all 0.3s;
 
     &:hover {
-      border-color: #11998e;
-      background: #d1fae5;
+      border-color: #764ba2;
+      background: #eef2ff;
     }
 
     .bank-icon {
@@ -337,7 +337,7 @@ async function handleGenerateExcel(): Promise<void> {
     align-items: center;
 
     .file-name {
-      color: #11998e;
+      color: #667eea;
       font-weight: 500;
       white-space: nowrap;
       overflow: hidden;
@@ -362,12 +362,12 @@ async function handleGenerateExcel(): Promise<void> {
   transition: all 0.3s;
 
   &.btn-primary {
-    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 
     &:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(17, 153, 142, 0.4);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
     }
 
     &:disabled {
@@ -476,8 +476,8 @@ async function handleGenerateExcel(): Promise<void> {
 
   &:focus {
     outline: none;
-    border-color: #11998e;
-    box-shadow: 0 0 0 2px rgba(17, 153, 142, 0.2);
+    border-color: #764ba2;
+    box-shadow: 0 0 0 2px rgba(118, 75, 162, 0.2);
   }
 }
 

@@ -1,6 +1,6 @@
 import { test, expect } from '@fixtures';
 
-test.describe('Multiple File Conversion', () => {
+test.describe('Convert (without preview)', () => {
   test.beforeEach(async ({ mockSetup }) => {
     await mockSetup.setMockMode();
   });

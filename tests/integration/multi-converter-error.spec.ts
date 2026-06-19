@@ -2,7 +2,7 @@ import { BankId } from '@data-models/bank-id';
 import { test, expect } from '@fixtures';
 import path from 'path';
 
-test.describe('Multiple File Conversion', () => {
+test.describe('Convert (without preview)', () => {
   test.beforeEach(async ({ mockSetup, budgetMock }) => {
     await mockSetup.setMockMode();
 
@@ -14,7 +14,7 @@ test.describe('Multiple File Conversion', () => {
       await budgetPage.goTo();
     });
 
-    await test.step('Upload a file to the ActivoBank input in the Multiple File Conversion card', async () => {
+    await test.step('Upload a file to the ActivoBank input in the Convert (without preview) card', async () => {
       const filePath = path.join(process.cwd(), `/tests/resources/ActivoBank-Invalid.xlsx`);
       await budgetPage.locators.multiFile.activoBank.fileInput().setInputFiles(filePath);
     });
@@ -33,7 +33,7 @@ test.describe('Multiple File Conversion', () => {
       await budgetPage.locators.multiFile.convertAllButton().click();
     });
 
-    await test.step('Verify an error alert is shown inside the Multiple File Conversion card', async () => {
+    await test.step('Verify an error alert is shown inside the Convert (without preview) card', async () => {
       await expect(budgetPage.locators.multiFile.errorAlert()).toBeVisible();
     });
   });

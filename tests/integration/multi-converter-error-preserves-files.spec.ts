@@ -2,7 +2,7 @@ import { BankId } from '@data-models/bank-id';
 import { test, expect } from '@fixtures';
 import path from 'path';
 
-test.describe('Multiple File Conversion', () => {
+test.describe('Convert (without preview)', () => {
   test.beforeEach(async ({ mockSetup, budgetMock }) => {
     await mockSetup.setMockMode();
 
