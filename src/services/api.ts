@@ -1,4 +1,4 @@
-import { BankFormat, BankConfig, BankConfigRequest, CategoryRule } from '@/types';
+import { BankFormat, BankConfig, BankConfigRequest, CategoryRule, TransactionPreview } from '@/types';
 import axios, { AxiosInstance } from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
@@ -102,6 +102,31 @@ class BudgetApiService {
     await this.client.put('/category-rule/', rules, {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     });
+  }
+
+  async previewAllBankFiles(files: { bankName: string; file: File }[]): Promise<TransactionPreview[]> {
+    const formData = new FormData();
+    const params = new URLSearchParams();
+
+    for (const { bankName, file } of files) {
+      formData.append('files', file);
+      params.append('bankNames', bankName);
+    }
+
+    const response = await this.client.post(`/budget/file/preview-all?${params.toString()}`, formData, {
+      headers: { Accept: 'application/json' },
+    });
+
+    return response.data;
+  }
+
+  async generateExcelFromPreview(transactions: TransactionPreview[]): Promise<Blob> {
+    const response = await this.client.post('/budget/file/preview-all/excel', transactions, {
+      headers: { 'Content-Type': 'application/json', Accept: 'application/octet-stream' },
+      responseType: 'blob',
+    });
+
+    return response.data;
   }
 }
 

@@ -66,3 +66,13 @@ export interface BankConfig {
   fileFormat: string;
   ignoreValues: string | null;
 }
+
+export interface TransactionPreview {
+  bankName?: string;
+  date: string;
+  type?: string;
+  category?: string | null;
+  subCategory?: string | null;
+  value: number;
+  originalDescription: string;
+}

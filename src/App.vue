@@ -43,6 +43,12 @@
             <h2 class="section-title" data-testid="admin-header">Admin</h2>
             <AdminPanel />
           </section>
+
+          <!-- Convert -->
+          <section class="converters-section" data-testid="convert-section">
+            <h2 class="section-title" data-testid="convert-header">Convert</h2>
+            <PreviewConverter :banks="banks" />
+          </section>
         </template>
       </div>
     </main>
@@ -58,6 +64,7 @@ import { ref, onMounted } from 'vue';
 import SingleFileConverter from '@/components/SingleFileConverter.vue';
 import MultiFileConverter from '@/components/MultiFileConverter.vue';
 import AdminPanel from '@/components/AdminPanel.vue';
+import PreviewConverter from '@/components/PreviewConverter.vue';
 import api from '@/services/api';
 import type { BankOption } from '@/types';
 
