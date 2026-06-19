@@ -72,17 +72,37 @@
                 <th>Type</th>
                 <th>Category</th>
                 <th>Subcategory</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(tx, idx) in previewData" :key="idx" :data-testid="`preview-row-${idx}`">
-                <td data-testid="preview-bank-name">{{ tx.bankName }}</td>
-                <td data-testid="preview-date">{{ formatDate(tx.date) }}</td>
+                <td data-testid="preview-bank-name">
+                  <select
+                    v-model="tx.bankName"
+                    class="cell-select"
+                    :class="{ 'cell--required': !tx.bankName }"
+                    data-testid="preview-bank-name-select"
+                  >
+                    <option value=""></option>
+                    <option v-for="opt in bankNameOptions" :key="opt" :value="opt">{{ opt }}</option>
+                  </select>
+                </td>
+                <td data-testid="preview-date">
+                  <input
+                    v-model="tx.date"
+                    type="date"
+                    class="cell-input cell-input--date"
+                    :class="{ 'cell--required': !tx.date }"
+                    data-testid="preview-date-input"
+                  />
+                </td>
                 <td data-testid="preview-description">
                   <input
                     v-model="tx.originalDescription"
                     type="text"
                     class="cell-input cell-input--description"
+                    :class="{ 'cell--required': !tx.originalDescription }"
                     data-testid="preview-description-input"
                   />
                 </td>
@@ -92,14 +112,22 @@
                     type="text"
                     inputmode="decimal"
                     class="cell-input cell-input--amount"
-                    :class="tx.value < 0 ? 'cell-input--negative' : 'cell-input--positive'"
+                    :class="[
+                      tx.value < 0 ? 'cell-input--negative' : 'cell-input--positive',
+                      { 'cell--required': tx.value === 0 },
+                    ]"
                     data-testid="preview-amount-input"
                     @blur="(e) => { const raw = (e.target as HTMLInputElement).value.replace(',', '.'); const v = parseFloat(raw); tx.value = isNaN(v) ? tx.value : parseFloat(v.toFixed(2)); (e.target as HTMLInputElement).value = tx.value.toFixed(2); }"
                   />
                 </td>
                 <td>
-                  <select v-model="tx.type" class="cell-select" data-testid="preview-type-select">
-                    <option value="">— none —</option>
+                  <select
+                    v-model="tx.type"
+                    class="cell-select"
+                    :class="{ 'cell--required': !tx.type }"
+                    data-testid="preview-type-select"
+                  >
+                    <option value=""></option>
                     <option v-for="opt in typeOptions" :key="opt" :value="opt">{{ opt }}</option>
                   </select>
                 </td>
@@ -110,7 +138,7 @@
                     data-testid="preview-category-select"
                     @change="handleCategoryChange(tx, tx.category)"
                   >
-                    <option value="">— none —</option>
+                    <option value=""></option>
                     <option v-for="opt in categoryOptions" :key="opt" :value="opt">{{ opt }}</option>
                   </select>
                 </td>
@@ -121,9 +149,12 @@
                     data-testid="preview-subcategory-select"
                     :disabled="!tx.category || loadingSubcategoryFor.has(tx.category)"
                   >
-                    <option value="">— none —</option>
+                    <option value=""></option>
                     <option v-for="opt in getSubcategoryOptions(tx.category)" :key="opt" :value="opt">{{ opt }}</option>
                   </select>
+                </td>
+                <td class="col-action">
+                  <button class="btn-add-row" data-testid="add-row-button" @click="insertRowAfter(idx)">+</button>
                 </td>
               </tr>
             </tbody>
@@ -167,6 +198,7 @@ const previewData = ref<TransactionPreview[]>([]);
 
 const typeOptions = ref<string[]>([]);
 const categoryOptions = ref<string[]>([]);
+const bankNameOptions = ref<string[]>([]);
 const categorySubcategoryMap = ref<Record<string, string[]>>({});
 const loadingSubcategoryFor = ref(new Set<string>());
 
@@ -178,6 +210,8 @@ onMounted(async () => {
     const rules = await api.getCategoryRules();
     typeOptions.value = [...new Set(rules.map((r) => r.type).filter((v): v is string => !!v))].sort();
     categoryOptions.value = [...new Set(rules.map((r) => r.category).filter((v): v is string => !!v))].sort();
+    const configs = await api.getAllBankConfigs();
+    bankNameOptions.value = [...configs.map((c) => c.bankName).sort(), 'Cash'];
   } catch {
     // Dropdowns will be empty; user can still interact
   }
@@ -220,11 +254,26 @@ async function handleCategoryChange(tx: TransactionPreview, category: string | n
   await loadSubcategoriesFor(category);
 }
 
-function formatDate(value: string): string {
+function normalizeDate(value: string): string {
   const d = new Date(value);
   if (isNaN(d.getTime())) return value;
   const pad = (n: number) => String(n).padStart(2, '0');
-  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function insertRowAfter(idx: number): void {
+  const today = new Date();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const emptyRow: TransactionPreview = {
+    bankName: '',
+    date: `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`,
+    type: '',
+    category: null,
+    subCategory: null,
+    value: 0,
+    originalDescription: '',
+  };
+  previewData.value.splice(idx + 1, 0, emptyRow);
 }
 
 async function handleGeneratePreview(): Promise<void> {
@@ -241,6 +290,7 @@ async function handleGeneratePreview(): Promise<void> {
 
     previewData.value = (await api.previewAllBankFiles(files)).map((tx) => ({
       ...tx,
+      date: normalizeDate(tx.date),
       value: parseFloat(tx.value.toFixed(2)),
     }));
 
@@ -537,6 +587,13 @@ async function handleGenerateExcel(): Promise<void> {
     border-color: #764ba2;
     box-shadow: 0 0 0 2px rgba(118, 75, 162, 0.2);
   }
+
+  &:disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+    border-color: #e5e7eb;
+    cursor: not-allowed;
+  }
 }
 
 .cell-input {
@@ -553,6 +610,16 @@ async function handleGenerateExcel(): Promise<void> {
     border-color: #764ba2;
     box-shadow: 0 0 0 2px rgba(118, 75, 162, 0.2);
   }
+}
+
+.cell--required {
+  border-color: #ef4444 !important;
+  background-color: #fff5f5 !important;
+}
+
+.cell-input--date {
+  min-width: 100px;
+  max-width: 110px;
 }
 
 .cell-input--amount {
@@ -577,6 +644,34 @@ async function handleGenerateExcel(): Promise<void> {
 
 .cell-select--small {
   min-width: 80px;
+}
+
+.col-action {
+  width: 32px;
+  padding: 4px 6px;
+}
+
+.btn-add-row {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid #c4b5fd;
+  border-radius: 4px;
+  background: #f5f7ff;
+  color: #667eea;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+  }
 }
 
 .alert {
