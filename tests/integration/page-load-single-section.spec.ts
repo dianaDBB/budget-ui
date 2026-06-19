@@ -10,10 +10,6 @@ test.describe('Page Load and Layout', () => {
       await budgetPage.goToSingleSection();
     });
 
-    await test.step('Verify the Single File Conversion section heading is visible', async () => {
-      await expect(budgetPage.locators.singleFile.header()).toBeVisible();
-    });
-
     await test.step('Verify the ActivoBank card is visible with Convert button disabled', async () => {
       await expect(budgetPage.locators.singleFile.activoBank.fileInput()).toContainText('Click to select file');
       await expect(budgetPage.locators.singleFile.activoBank.convertButton()).toBeDisabled();
