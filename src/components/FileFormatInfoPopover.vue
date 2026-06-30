@@ -1,9 +1,9 @@
 <template>
   <div class="format-popover" @click.self="emit('close')">
-    <div class="format-popover-content" data-testid="format-info-popover" :style="{ maxWidth }">
+    <div class="format-popover-content" :style="{ maxWidth }">
       <div class="format-popover-header">
         <span><slot name="title" /></span>
-        <button class="close-btn" data-testid="close-button" @click="emit('close')">✕</button>
+        <button class="close-btn" @click="emit('close')">✕</button>
       </div>
       <div class="format-popover-body">
         <div v-if="loading" class="format-loading">Loading…</div>

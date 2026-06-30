@@ -1,11 +1,14 @@
 import {
-  BankFormat,
+  FileConfig,
   BankConfig,
-  BankConfigRequest,
   CategoryRule,
-  CategoryRuleSavePayload,
-  BudgetType,
-  TransactionPreview,
+  UpdateCategoryRulePayload,
+  PreviewData,
+  UpdateFileConfigPayload,
+  Type,
+  Category,
+  Subcategory,
+  SubcategoriesByCategory,
 } from '@/types';
 import axios, { AxiosInstance } from 'axios';
 
@@ -27,7 +30,6 @@ class BudgetApiService {
     // Add request interceptor for debugging
     this.client.interceptors.request.use(
       (config) => {
-        console.log(`API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
         return config;
       },
       (error) => {
@@ -39,7 +41,6 @@ class BudgetApiService {
     // Add response interceptor for debugging
     this.client.interceptors.response.use(
       (response) => {
-        console.log(`API Response: ${response.status}`);
         return response;
       },
       (error) => {
@@ -52,90 +53,35 @@ class BudgetApiService {
     );
   }
 
-  async convertBankFile(bankName: string, file: File): Promise<Blob> {
-    const formData = new FormData();
-    formData.append('file', file);
+  //*************************************************************************************************** DROPDOWN VALUES
 
-    const response = await this.client.post(`/budget/file/${bankName}`, formData, {
-      responseType: 'blob',
-    });
-
-    return response.data;
-  }
-
-  async getBankFormat(bankName: string): Promise<BankFormat> {
-    const response = await this.client.get(`/file-config/${bankName}`, {
-      headers: { Accept: 'application/json' },
-    });
-    return response.data;
-  }
-
-  async getAllBankConfigs(): Promise<BankConfig[]> {
-    const response = await this.client.get('/file-config/all', {
-      headers: { Accept: 'application/json' },
-    });
-    return response.data;
-  }
-
-  async convertAllBankFiles(files: { bankName: string; file: File }[]): Promise<Blob> {
-    const formData = new FormData();
-    const params = new URLSearchParams();
-
-    for (const { bankName, file } of files) {
-      formData.append('files', file);
-      params.append('bankNames', bankName);
-    }
-
-    const response = await this.client.post(`/budget/file/all?${params.toString()}`, formData, {
-      responseType: 'blob',
-    });
-
-    return response.data;
-  }
-
-  async updateBankConfig(bankName: string, config: BankConfigRequest): Promise<void> {
-    await this.client.put(`/file-config/${bankName}`, config, {
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    });
-  }
-
-  async getAllTypes(): Promise<BudgetType[]> {
+  async getAllTypes(): Promise<Type[]> {
     const response = await this.client.get('/type/all', {
       headers: { Accept: 'application/json' },
     });
+
     return response.data;
   }
 
-  async getCategoryRules(): Promise<CategoryRule[]> {
-    const response = await this.client.get('/category-rule/', {
-      headers: { Accept: 'application/json' },
-    });
-    return response.data;
-  }
-
-  async getAllCategories(): Promise<{ id: string; category: string }[]> {
+  async getAllCategories(): Promise<Category[]> {
     const response = await this.client.get('/category/all', {
       headers: { Accept: 'application/json' },
     });
-    return (response.data as { id: string; category: string }[]).sort((a, b) => a.category.localeCompare(b.category));
+
+    return response.data;
   }
 
-  async getSubcategoriesByCategory(categoryName: string): Promise<{ id: string; subcategory: string }[]> {
+  async getSubcategoriesByCategory(categoryName: string): Promise<Subcategory[]> {
     const response = await this.client.get(`/subcategory/${encodeURIComponent(categoryName)}/all`, {
       headers: { Accept: 'application/json' },
     });
-    return (response.data as { id: string; subcategory: string }[]).sort((a, b) =>
-      a.subcategory.localeCompare(b.subcategory),
-    );
+
+    return response.data;
   }
 
-  async updateCategoryRules(rules: CategoryRuleSavePayload[]): Promise<void> {
-    await this.client.put('/category-rule/', rules, {
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    });
-  }
+  //******************************************************************************************** PREVIEW MULTIPLE FILES
 
-  async previewAllBankFiles(files: { bankName: string; file: File }[]): Promise<TransactionPreview[]> {
+  async previewMultipleFiles(files: { bankName: string; file: File }[]): Promise<PreviewData[]> {
     const formData = new FormData();
     const params = new URLSearchParams();
 
@@ -144,21 +90,100 @@ class BudgetApiService {
       params.append('bankNames', bankName);
     }
 
-    const response = await this.client.post(`/budget/file/preview-all?${params.toString()}`, formData, {
+    const response = await this.client.post(`/file/preview-all?${params.toString()}`, formData, {
       headers: { Accept: 'application/json' },
     });
 
     return response.data;
   }
 
-  async generateExcelFromPreview(transactions: TransactionPreview[]): Promise<Blob> {
-    const response = await this.client.post('/budget/file/preview-all/excel', transactions, {
+  async previewToExcel(transactions: PreviewData[]): Promise<Blob> {
+    const response = await this.client.post('/file/preview-to-excel', transactions, {
       headers: { 'Content-Type': 'application/json', Accept: 'application/octet-stream' },
       responseType: 'blob',
     });
 
     return response.data;
   }
+
+  //******************************************************************************************** CONVERT MULTIPLE FILES
+
+  async convertMultipleFiles(files: { bankName: string; file: File }[]): Promise<Blob> {
+    const formData = new FormData();
+    const params = new URLSearchParams();
+
+    for (const { bankName, file } of files) {
+      formData.append('files', file);
+      params.append('bankNames', bankName);
+    }
+
+    const response = await this.client.post(`/file/all?${params.toString()}`, formData, {
+      responseType: 'blob',
+    });
+
+    return response.data;
+  }
+
+  //**************************************************************************************************** CATEGORY RULES
+
+  async getCategoryRules(): Promise<CategoryRule[]> {
+    const response = await this.client.get('/category-rule/all', {
+      headers: { Accept: 'application/json' },
+    });
+
+    return response.data;
+  }
+
+  async updateCategoryRules(rules: UpdateCategoryRulePayload[]): Promise<void> {
+    await this.client.put('/category-rule/', rules, {
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    });
+  }
+
+  async deleteCategoryRules(rules: string[]): Promise<void> {
+    await this.client.delete('/category-rule/', {
+      data: rules,
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    });
+  }
+
+  //******************************************************************************************************* FILE CONFIG
+
+  async getFileConfig(bankName: string): Promise<FileConfig> {
+    const response = await this.client.get(`/file-config/${bankName}`, {
+      headers: { Accept: 'application/json' },
+    });
+
+    return response.data;
+  }
+
+  async getAllFilesConfigs(): Promise<BankConfig[]> {
+    const response = await this.client.get('/file-config/all', {
+      headers: { Accept: 'application/json' },
+    });
+
+    return response.data;
+  }
+
+  async updateFileConfig(bankName: string, config: UpdateFileConfigPayload): Promise<void> {
+    await this.client.put(`/file-config/${bankName}`, config, {
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    });
+  }
+
+  async addFileConfig(config: UpdateFileConfigPayload): Promise<void> {
+    await this.client.post(`/file-config/`, config, {
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    });
+  }
+
+  async deleteFileConfig(bankName: string): Promise<void> {
+    await this.client.delete(`/file-config/${bankName}`, {
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    });
+  }
+
+  //************************************************************************************************************* CACHE
 
   async refreshCache(): Promise<void> {
     await this.client.post('/cache/refresh', null, {
