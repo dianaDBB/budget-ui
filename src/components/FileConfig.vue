@@ -69,11 +69,11 @@
             <label :for="`${activeTab}-dateColumnPosition`" class="field-label">Date Column Position</label>
             <input
               :id="`${activeTab}-dateColumnPosition`"
-              v-model.number="form.dateColumnPosition"
+              v-model.number="form.dateColumnPos"
               type="number"
               min="0"
               class="field-input"
-              :class="{ 'field-error': isInvalid(form.dateColumnPosition) }"
+              :class="{ 'field-error': isInvalid(form.dateColumnPos) }"
             />
             <p class="field-tip">Column pos for date value (0 index)</p>
           </div>
@@ -82,11 +82,11 @@
             <label :for="`${activeTab}-amountColumnPosition`" class="field-label">Amount Column Position</label>
             <input
               :id="`${activeTab}-amountColumnPosition`"
-              v-model.number="form.amountColumnPosition"
+              v-model.number="form.amountColumnPos"
               type="number"
               min="0"
               class="field-input"
-              :class="{ 'field-error': isInvalid(form.amountColumnPosition) }"
+              :class="{ 'field-error': isInvalid(form.amountColumnPos) }"
             />
             <p class="field-tip">Column pos for amount value (0 index)</p>
           </div>
@@ -97,11 +97,11 @@
             >
             <input
               :id="`${activeTab}-descriptionColumnPosition`"
-              v-model.number="form.descColumnPosition"
+              v-model.number="form.descColumnPos"
               type="number"
               min="0"
               class="field-input"
-              :class="{ 'field-error': isInvalid(form.descColumnPosition) }"
+              :class="{ 'field-error': isInvalid(form.descColumnPos) }"
             />
             <p class="field-tip">Column pos for description value (0 index)</p>
           </div>
@@ -112,7 +112,7 @@
             >
             <input
               :id="`${activeTab}-creditDebitColumnPosition`"
-              v-model.number="form.cdColumnPosition"
+              v-model.number="form.creditDebitColumnPos"
               type="number"
               min="0"
               class="field-input"
@@ -208,10 +208,10 @@ const emptyForm = (): UpdateFileConfigPayload => ({
   bankName: undefined,
   fileFormat: undefined,
   firstLine: undefined,
-  dateColumnPosition: undefined,
-  amountColumnPosition: undefined,
-  descColumnPosition: undefined,
-  cdColumnPosition: undefined,
+  dateColumnPos: undefined,
+  amountColumnPos: undefined,
+  descColumnPos: undefined,
+  creditDebitColumnPos: undefined,
   dateFormat: undefined,
   delimiter: undefined,
   ignoreValues: undefined,
@@ -250,16 +250,17 @@ async function fetchCurrentConfig(bankName: string): Promise<void> {
     currentFileConfig.value = await api.getFileConfig(bankName);
 
     form.value = {
-      bankName: currentFileConfig.value.bankName,
-      fileFormat: currentFileConfig.value.fileFormat,
-      firstLine: currentFileConfig.value.firstDataLine,
-      dateColumnPosition: currentFileConfig.value.dateColumnPosition,
-      amountColumnPosition: currentFileConfig.value.amountColumnPosition,
-      descColumnPosition: currentFileConfig.value.descriptionColumnPosition,
-      cdColumnPosition: currentFileConfig.value.creditDebitColumnPosition,
-      dateFormat: currentFileConfig.value.dateFormat,
-      delimiter: currentFileConfig.value.delimiter,
-      ignoreValues: currentFileConfig.value.ignoreValues.join(','),
+      id: currentFileConfig.value.fileConfigDto.id,
+      bankName: currentFileConfig.value.fileConfigDto.bankName,
+      fileFormat: currentFileConfig.value.fileConfigDto.fileFormat,
+      firstLine: currentFileConfig.value.fileConfigDto.firstLine,
+      dateColumnPos: currentFileConfig.value.fileConfigDto.dateColumnPos,
+      amountColumnPos: currentFileConfig.value.fileConfigDto.amountColumnPos,
+      descColumnPos: currentFileConfig.value.fileConfigDto.descColumnPos,
+      creditDebitColumnPos: currentFileConfig.value.fileConfigDto.creditDebitColumnPos,
+      dateFormat: currentFileConfig.value.fileConfigDto.dateFormat,
+      delimiter: currentFileConfig.value.fileConfigDto.delimiter,
+      ignoreValues: currentFileConfig.value.fileConfigDto.ignoreValues,
     };
 
     apiStatus.value = { isLoading: false, isSuccess: true, isError: false };
@@ -279,18 +280,18 @@ const isFormValid = computed(() => {
       !!form.value.bankName?.trim() &&
       isValidNumber(form.value.firstLine) &&
       !!form.value.dateFormat?.trim() &&
-      isValidNumber(form.value.amountColumnPosition) &&
-      isValidNumber(form.value.dateColumnPosition) &&
-      isValidNumber(form.value.descColumnPosition)
+      isValidNumber(form.value.amountColumnPos) &&
+      isValidNumber(form.value.dateColumnPos) &&
+      isValidNumber(form.value.descColumnPos)
     );
   }
 
   return (
     isValidNumber(form.value.firstLine) &&
     !!form.value.dateFormat?.trim() &&
-    isValidNumber(form.value.amountColumnPosition) &&
-    isValidNumber(form.value.dateColumnPosition) &&
-    isValidNumber(form.value.descColumnPosition)
+    isValidNumber(form.value.amountColumnPos) &&
+    isValidNumber(form.value.dateColumnPos) &&
+    isValidNumber(form.value.descColumnPos)
   );
 });
 

@@ -14,11 +14,11 @@ export class BudgetApi extends BaseApi {
   }
 
   static generateSingleFileUrl(bankId: BankId): string {
-    return `${BudgetApi.baseUrl()}/budget/file/${bankId}`;
+    return `${BudgetApi.baseUrl()}/file/${bankId}`;
   }
 
   static generateAllFilesUrl(): string {
-    return `${BudgetApi.baseUrl()}/budget/file/all`;
+    return `${BudgetApi.baseUrl()}/file/all`;
   }
 
   static getBankFormatUrl(bankId: BankId): string {

@@ -37,9 +37,9 @@
             <ConvertMultipleFiles :banks="banks" />
           </section>
 
-          <!-- Categories Rules -->
+          <!-- Rules -->
           <section v-if="activeTab === 'categories'" class="tab-body">
-            <CategoryTypeRules :types="types" :categories="categories" :subcategories="subcategories" />
+            <Rules :types="types" :categories="categories" :subcategories="subcategories" />
           </section>
 
           <!-- File Config -->
@@ -65,16 +65,16 @@
 import { ref, onMounted } from 'vue';
 import ConvertAndCategorize from '@/components/ConvertAndCategorize.vue';
 import ConvertMultipleFiles from '@/components/ConvertMultipleFiles.vue';
-import CategoryTypeRules from './components/CategoryTypeRules.vue';
+import Rules from './components/Rules.vue';
 import FileConfig from '@/components/FileConfig.vue';
 import Cache from '@/components/Cache.vue';
 import api from '@/services/api';
-import type { ApiResponseStatus, Bank, Category, SubcategoriesByCategory, Subcategory, Type } from '@/types';
+import type { ApiResponseStatus, Bank, Category, SubcategoriesByCategory, Type } from '@/types';
 
 const tabs = [
   { id: 'convert', label: 'Convert & Categorize' },
   { id: 'multi', label: 'Convert Multiple Files' },
-  { id: 'categories', label: 'Categories & Types Rules' },
+  { id: 'categories', label: 'Rules' },
   { id: 'file-config', label: 'File Config' },
   { id: 'cache', label: 'Cache Management' },
 ];

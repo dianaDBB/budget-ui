@@ -40,10 +40,10 @@
                 <!-- TYPE -->
                 <td>
                   <select
-                    v-model="row.type_id"
+                    v-model="row.typeId"
                     :disabled="row._isDeleted"
                     class="cell-select"
-                    :class="{ required: !row.type_id }"
+                    :class="{ required: !row.typeId }"
                     @change="row._isEdited = true"
                   >
                     <option value=""></option>
@@ -56,7 +56,7 @@
                 <!-- CATEGORY -->
                 <td>
                   <select
-                    v-model="row.category_id"
+                    v-model="row.categoryId"
                     :disabled="row._isDeleted"
                     class="cell-select"
                     @change="handleCategoryChange(row)"
@@ -71,9 +71,9 @@
                 <!-- SUBCATEGORY -->
                 <td>
                   <select
-                    v-model="row.subCategory_id"
+                    v-model="row.subcategoryId"
                     class="cell-select"
-                    :disabled="!row.category_id || row._isDeleted"
+                    :disabled="!row.categoryId || row._isDeleted"
                     @change="row._isEdited = true"
                   >
                     <option value=""></option>
@@ -122,8 +122,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import type {
-  CategoryRule,
-  UpdateCategoryRulePayload,
+  Rule,
+  UpdateRulePayload,
   ApiResponseStatus,
   Type,
   Category,
@@ -138,14 +138,14 @@ const props = defineProps<{ types: Type[]; categories: Category[]; subcategories
 
 const apiStatus = ref<ApiResponseStatus>({ isLoading: false, isSuccess: false, isError: false });
 
-interface Rule extends CategoryRule {
+interface RuleRow extends Rule {
   _key: string;
   _isNew: boolean;
   _isEdited: boolean;
   _isDeleted: boolean;
 }
 
-const rules = ref<Rule[]>([]);
+const rules = ref<RuleRow[]>([]);
 
 let _keyCounter = 0;
 function nextKey(): string {
@@ -160,7 +160,7 @@ async function fetchCategoryRules(): Promise<void> {
   apiStatus.value = { isLoading: false, isSuccess: false, isError: false };
 
   try {
-    const categpryRules = await api.getCategoryRules();
+    const categpryRules = await api.getRules();
 
     rules.value = categpryRules.map((rule) => ({
       ...rule,
@@ -181,26 +181,26 @@ async function fetchCategoryRules(): Promise<void> {
   }
 }
 
-function getRowSubcategories(row: Rule): Subcategory[] {
-  if (!row.category_id) return [];
+function getRowSubcategories(row: RuleRow): Subcategory[] {
+  if (!row.categoryId) return [];
 
-  const categoryName = getCategoryName(props.categories, row.category_id);
+  const categoryName = getCategoryName(props.categories, row.categoryId);
   const result = getSubcategories(props.subcategories, categoryName);
 
   return result;
 }
 
-async function handleCategoryChange(row: Rule): Promise<void> {
-  row.subCategory_id = '';
+async function handleCategoryChange(row: RuleRow): Promise<void> {
+  row.subcategoryId = '';
   row._isEdited = true;
 }
 
 function addRule(): void {
   rules.value.push({
     keyword: '',
-    type_id: '',
-    category_id: '',
-    subCategory_id: '',
+    typeId: '',
+    categoryId: '',
+    subcategoryId: '',
     _key: nextKey(),
     _isNew: true,
     _isEdited: true,
@@ -208,27 +208,27 @@ function addRule(): void {
   });
 }
 
-function toggleDelete(row: Rule): void {
+function toggleDelete(row: RuleRow): void {
   row._isDeleted = !row._isDeleted;
 }
 
 async function saveCategories(): Promise<void> {
   apiStatus.value = { isLoading: true, isSuccess: false, isError: false };
   try {
-    const updatePayload: UpdateCategoryRulePayload[] = rules.value
+    const updatePayload: UpdateRulePayload[] = rules.value
       .filter((rule) => !rule._isDeleted && (rule._isNew || rule._isEdited))
       .map((rule) => ({
         id: rule.id,
         keyword: rule.keyword,
-        typeId: rule.type_id,
-        categoryId: rule.category_id,
-        subcategoryId: rule.subCategory_id,
+        typeId: rule.typeId,
+        categoryId: rule.categoryId,
+        subcategoryId: rule.subcategoryId,
       }));
 
     const deletePayload: string[] = rules.value.filter((rule) => rule._isDeleted).map((rule) => rule.id!);
 
-    await api.updateCategoryRules(updatePayload);
-    await api.deleteCategoryRules(deletePayload);
+    await api.updateRules(updatePayload);
+    await api.deleteRules(deletePayload);
     await fetchCategoryRules();
 
     apiStatus.value = {

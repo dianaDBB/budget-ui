@@ -29,20 +29,20 @@ export interface PreviewData {
   originalDescription: string;
 }
 
-//****************************************************************************************************** CATEGORY RULES
+//*************************************************************************************************************** RULES
 
-export interface CategoryRule {
+export interface Rule {
   id?: string;
   keyword?: string;
   category?: string;
-  category_id?: string;
+  categoryId?: string;
   subCategory?: string;
-  subCategory_id?: string;
+  subcategoryId?: string;
   type?: string;
-  type_id?: string;
+  typeId?: string;
 }
 
-export interface UpdateCategoryRulePayload {
+export interface UpdateRulePayload {
   id?: string;
   keyword?: string;
   typeId?: string;
@@ -53,27 +53,31 @@ export interface UpdateCategoryRulePayload {
 //********************************************************************************************************* FILE CONFIG
 
 export interface FileConfig {
-  bankName: string;
-  fileFormat: string;
-  firstDataLine: number;
-  dateColumnPosition: number;
-  amountColumnPosition: number;
-  descriptionColumnPosition: number;
-  creditDebitColumnPosition?: number;
-  dateFormat: string;
-  delimiter?: string;
-  ignoreValues: string[];
+  fileConfigDto: {
+    id: string;
+    bankName: string;
+    fileFormat: string;
+    firstLine: number;
+    dateColumnPos: number;
+    amountColumnPos: number;
+    descColumnPos: number;
+    creditDebitColumnPos?: number;
+    dateFormat: string;
+    delimiter?: string;
+    ignoreValues: string;
+  };
   htmlExample: string;
 }
 
 export interface UpdateFileConfigPayload {
+  id?: string;
   bankName?: string;
   fileFormat?: string;
   firstLine?: number;
-  dateColumnPosition?: number;
-  amountColumnPosition?: number;
-  descColumnPosition?: number;
-  cdColumnPosition?: number;
+  dateColumnPos?: number;
+  amountColumnPos?: number;
+  descColumnPos?: number;
+  creditDebitColumnPos?: number;
   dateFormat?: string;
   delimiter?: string;
   ignoreValues?: string;

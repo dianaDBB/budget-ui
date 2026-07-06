@@ -97,7 +97,7 @@ async function openFileInfo(bankName: string): Promise<void> {
 
     return {
       html: result.htmlExample,
-      fileFormat: result.fileFormat,
+      fileFormat: result.fileConfigDto.fileFormat,
     };
   });
 }

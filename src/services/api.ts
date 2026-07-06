@@ -1,14 +1,13 @@
 import {
   FileConfig,
   BankConfig,
-  CategoryRule,
-  UpdateCategoryRulePayload,
+  Rule,
+  UpdateRulePayload,
   PreviewData,
   UpdateFileConfigPayload,
   Type,
   Category,
   Subcategory,
-  SubcategoriesByCategory,
 } from '@/types';
 import axios, { AxiosInstance } from 'axios';
 
@@ -124,24 +123,24 @@ class BudgetApiService {
     return response.data;
   }
 
-  //**************************************************************************************************** CATEGORY RULES
+  //************************************************************************************************************* RULES
 
-  async getCategoryRules(): Promise<CategoryRule[]> {
-    const response = await this.client.get('/category-rule/all', {
+  async getRules(): Promise<Rule[]> {
+    const response = await this.client.get('/rule/all', {
       headers: { Accept: 'application/json' },
     });
 
     return response.data;
   }
 
-  async updateCategoryRules(rules: UpdateCategoryRulePayload[]): Promise<void> {
-    await this.client.put('/category-rule/', rules, {
+  async updateRules(rules: UpdateRulePayload[]): Promise<void> {
+    await this.client.put('/rule/', rules, {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     });
   }
 
-  async deleteCategoryRules(rules: string[]): Promise<void> {
-    await this.client.delete('/category-rule/', {
+  async deleteRules(rules: string[]): Promise<void> {
+    await this.client.delete('/rule/', {
       data: rules,
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     });
