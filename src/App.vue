@@ -2,8 +2,8 @@
   <div class="app">
     <header class="app-header">
       <div class="header-content">
-        <h1>Budget</h1>
-        <p>Unify different bank extracts to a standardized format</p>
+        <h1 data-testid="app-header">Budget</h1>
+        <p data-testid="app-subtitle">Unify different bank extracts to a standardized format</p>
       </div>
     </header>
 
@@ -16,6 +16,7 @@
               :key="tab.id"
               class="tab-btn"
               :class="{ active: activeTab === tab.id }"
+              data-testid="tab"
               @click="activeTab = tab.id"
             >
               {{ tab.label }}

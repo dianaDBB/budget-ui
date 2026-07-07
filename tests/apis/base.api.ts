@@ -11,6 +11,10 @@ chai.use(jsonSchema);
 export class BaseApi {
   constructor(readonly request: APIRequestContext, readonly envFileName?: string) {}
 
+  static baseUrl(): string {
+    return `${process.env.VITE_API_URL}`;
+  }
+
   validateResponseSchema(requestMethod: string, requestUrl: string, response: any, schema: any): void {
     const errorMessage = `\n\n\t${requestMethod} ${requestUrl}\n\tERROR - Schema validation failed.\n\n\tDETAILS`;
     chaiExpect(response, errorMessage).to.be.jsonSchema(schema);

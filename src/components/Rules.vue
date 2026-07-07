@@ -5,7 +5,7 @@
     <div class="card-body">
       <div class="rules-section">
         <div class="table-wrapper">
-          <table class="table">
+          <table class="table" data-testid="rules-table">
             <colgroup>
               <col style="width: 53%" />
               <col style="width: 15%" />
@@ -23,11 +23,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row, i) in rules" :key="row._key" :class="{ deleted: row._isDeleted }">
+              <tr v-for="row in rules" :key="row._key" :class="{ deleted: row._isDeleted }" data-testid="rule-row">
                 <!-- KEYWORD -->
                 <td>
                   <input
                     v-model="row.keyword"
+                    data-testid="keyword-input"
                     :disabled="row._isDeleted"
                     type="text"
                     class="cell-input"
@@ -41,6 +42,7 @@
                 <td>
                   <select
                     v-model="row.typeId"
+                    data-testid="type-select"
                     :disabled="row._isDeleted"
                     class="cell-select"
                     :class="{ required: !row.typeId }"
@@ -57,6 +59,7 @@
                 <td>
                   <select
                     v-model="row.categoryId"
+                    data-testid="category-select"
                     :disabled="row._isDeleted"
                     class="cell-select"
                     @change="handleCategoryChange(row)"
@@ -72,6 +75,7 @@
                 <td>
                   <select
                     v-model="row.subcategoryId"
+                    data-testid="subcategory-select"
                     class="cell-select"
                     :disabled="!row.categoryId || row._isDeleted"
                     @change="row._isEdited = true"
@@ -97,9 +101,14 @@
         </div>
 
         <div class="actions">
-          <button class="btn btn-outline" @click="addRule">+ Add Rule</button>
+          <button class="btn btn-outline" data-testid="add-rule" @click="addRule">+ Add Rule</button>
 
-          <button class="btn" :disabled="apiStatus.isLoading || !hasChanges" @click="saveCategories">
+          <button
+            class="btn"
+            data-testid="save-rules"
+            :disabled="apiStatus.isLoading || !hasChanges"
+            @click="saveCategories"
+          >
             <span v-if="apiStatus.isLoading" class="spinner">⚙️</span>
             <span v-else>Save Rules</span>
           </button>

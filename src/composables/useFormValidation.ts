@@ -7,5 +7,5 @@ export function isValidNumber(value: unknown) {
 }
 
 export function isInvalid(field: unknown) {
-  field === undefined || field === null || field === '' || (typeof field === 'number' && Number.isNaN(field));
+  return field === undefined || field === null || field === '' || (typeof field === 'number' && Number.isNaN(field));
 }

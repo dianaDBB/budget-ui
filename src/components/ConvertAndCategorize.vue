@@ -36,7 +36,12 @@
               class="field-file-input"
               @change="handleFileSelect($event, bank.name)"
             />
-            <label :for="`file-${bank.name}`" class="file-btn" :class="{ selected: selectedFiles[bank.name] }">
+            <label
+              :for="`file-${bank.name}`"
+              data-testid="file-input"
+              class="file-btn"
+              :class="{ selected: selectedFiles[bank.name] }"
+            >
               {{ selectedFiles[bank.name]?.name ?? 'Select file' }}
             </label>
           </div>
@@ -45,6 +50,7 @@
 
       <button
         class="btn"
+        data-testid="generatePreviewBtn"
         :disabled="!hasFiles || previewApiStatus.isLoading || previewData.length > 0"
         @click="handleGeneratePreview"
       >
@@ -60,7 +66,7 @@
       <!-- Preview Table -->
       <div v-if="previewData.length > 0" class="preview-section">
         <div class="table-wrapper">
-          <table class="table">
+          <table class="table" data-testid="preview-table">
             <colgroup>
               <col style="width: 10%" />
               <col style="width: 10%" />
@@ -165,6 +171,7 @@
       <button
         v-if="previewData.length > 0"
         class="btn"
+        data-testid="generateExcelBtn"
         :disabled="generateExcelApiStatus.isLoading"
         @click="handleGenerateExcel"
       >
@@ -186,7 +193,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import FileFormatInfoPopover from './FileFormatInfoPopover.vue';
 import type {
   ApiResponseStatus,

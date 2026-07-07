@@ -22,7 +22,7 @@ export default typescriptEslint.config(
       },
     },
     rules: {
-      // add custom rules here
+      'vue/multi-word-component-names': 'off',
     },
   },
   eslintConfigPrettier,

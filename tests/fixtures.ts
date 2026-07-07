@@ -1,18 +1,22 @@
 import { test as base, expect, Locator } from '@playwright/test';
-import { BudgetPage } from '@pages/budget.page';
-import { BudgetApiMock } from '@mocks/budget-api.mock';
 import { MockSetup } from '@mocks/mock-setup';
-import { BudgetApi } from '@apis/budget.api';
 import { BaseApi } from '@apis/base.api';
+import { BudgetPage } from '@pages/budget.page';
+import { ConvertAndCategorizePage } from '@pages/convert-and-categorize.page';
+import { RulesPage } from '@pages/rules.page';
+import { FileConfigApiApiMock } from '@mocks/file-config-api.mock';
+import { BasePage } from '@pages/base.page';
 
 export interface BaseFixtures {
   mockSetup: MockSetup;
-  budgetMock: BudgetApiMock;
-
   baseApi: BaseApi;
-  budgetApi: BudgetApi;
+  basePage: BasePage;
+
+  fileConfigApiApiMock: FileConfigApiApiMock;
 
   budgetPage: BudgetPage;
+  convertAndCategorizePage: ConvertAndCategorizePage;
+  rulesPage: RulesPage;
 }
 
 export const test = base.extend<BaseFixtures>({
@@ -21,24 +25,34 @@ export const test = base.extend<BaseFixtures>({
     await use(mockSetup);
   },
 
-  budgetMock: async ({ budgetPage }, use) => {
-    const budgetMock = new BudgetApiMock(budgetPage);
-    await use(budgetMock);
-  },
-
   baseApi: async ({ request }, use) => {
     const baseApi = new BaseApi(request);
     await use(baseApi);
   },
 
-  budgetApi: async ({ request }, use) => {
-    const budgetApi = new BudgetApi(request);
-    await use(budgetApi);
+  basePage: async ({ page }, use) => {
+    const basePage = new BasePage(page);
+    await use(basePage);
+  },
+
+  fileConfigApiApiMock: async ({ basePage }, use) => {
+    const fileConfigApiApiMock = new FileConfigApiApiMock(basePage);
+    await use(fileConfigApiApiMock);
   },
 
   budgetPage: async ({ page }, use) => {
     const budgetPage = new BudgetPage(page);
     await use(budgetPage);
+  },
+
+  convertAndCategorizePage: async ({ page }, use) => {
+    const convertAndCategorizePage = new ConvertAndCategorizePage(page);
+    await use(convertAndCategorizePage);
+  },
+
+  rulesPage: async ({ page }, use) => {
+    const rulesPage = new RulesPage(page);
+    await use(rulesPage);
   },
 });
 

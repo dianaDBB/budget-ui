@@ -1,8 +1,9 @@
 import { MockParams } from '@data-models/mock';
-import { Page, FrameLocator } from '@playwright/test';
+import { Page, FrameLocator, Locator } from '@playwright/test';
 
 import chai from 'chai';
 import jsonSchema from 'chai-json-schema';
+import path from 'path';
 
 chai.use(jsonSchema);
 
@@ -11,6 +12,16 @@ export class BasePage {
 
   public getLocatorSource(): Page | FrameLocator {
     return this.frameLocator || this.page;
+  }
+
+  baseLocators = {
+    tab: (name: string) => {
+      return this.getLocatorSource().getByTestId('tab').filter({ hasText: name });
+    },
+  };
+
+  async openTab(name: string): Promise<void> {
+    await this.baseLocators.tab(name).click();
   }
 
   validateMock(requestMethod: string, requestUrl: string, mockedResponse: any, schema: any): void {
@@ -48,5 +59,13 @@ export class BasePage {
         await route.abort();
       }
     });
+  }
+
+  async clickAndUploadFile(locator: Locator, fileName: string) {
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
+    await locator.click();
+
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(path.resolve('tests/resources', fileName));
   }
 }
