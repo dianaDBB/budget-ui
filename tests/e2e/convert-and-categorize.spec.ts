@@ -8,22 +8,22 @@ test.describe('Convert & Categorize', () => {
     });
 
     await test.step('Select first supported bank file and upload it', async () => {
-      await convertAndCategorizePage.uploadFile(0, 'activoBank.xlsx');
+      await convertAndCategorizePage.uploadFile(0, 'ActivoBank.xlsx');
       await expect(convertAndCategorizePage.locators.fileInputs.byIndex(0)).toHaveValue(
-        'C:\\fakepath\\activoBank.xlsx',
+        'C:\\fakepath\\ActivoBank.xlsx',
       );
     });
 
     await test.step('Select second supported bank file and upload it', async () => {
-      await convertAndCategorizePage.uploadFile(1, 'creditoAgricola.xlsx');
+      await convertAndCategorizePage.uploadFile(1, 'CreditoAgricola.xlsx');
       await expect(convertAndCategorizePage.locators.fileInputs.byIndex(1)).toHaveValue(
-        'C:\\fakepath\\creditoAgricola.xlsx',
+        'C:\\fakepath\\CreditoAgricola.xlsx',
       );
     });
 
     await test.step('Select third supported bank file and upload it', async () => {
-      await convertAndCategorizePage.uploadFile(2, 'cryptoCom.csv');
-      await expect(convertAndCategorizePage.locators.fileInputs.byIndex(2)).toHaveValue('C:\\fakepath\\cryptoCom.csv');
+      await convertAndCategorizePage.uploadFile(2, 'CryptoCom.csv');
+      await expect(convertAndCategorizePage.locators.fileInputs.byIndex(2)).toHaveValue('C:\\fakepath\\CryptoCom.csv');
     });
 
     await test.step('Click "Generate Preview"', async () => {
